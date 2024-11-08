@@ -1,24 +1,23 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import SaleBar from './components/SaleBar';
-import Hero from './components/Hero';
-import FlashSales from './components/FlashSales';
-import Categories from './components/Categories';
-import BestSelling from './components/BestSelling';
-import Hero_2 from './components/Hero2';
-import Featured from './components/Featured';
+import Footer from './components/Footer';
+import HomePage from './Pages/HomePage';
+import Signup_page from './Pages/Signup_page';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 const App = () => {
   return (
     <>
+
       <SaleBar />
       <Navbar />
-      <Hero />
-      <FlashSales />
-      <Categories />
-      <BestSelling />
-      <Hero_2 />
-      <Featured />
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/signup' element={<Signup_page />} />
+        <Route path='/login' element={<Signup_page />} />
+      </Routes>
+      <Footer />
     </>
   )
 }
