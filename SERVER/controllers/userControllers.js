@@ -2,14 +2,17 @@ import User from '../models/userModel.js';
 import httpStatus from 'http-status-codes';
 
 const addToCart = async (req, res) => {
-    const { email, prodID } = req.body;
+    const { prodID } = req.body;
+    const { email } = req.user; 
+
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({email});
         if (!user) {
             return res.status(httpStatus.NOT_FOUND).json({ success: false, message: "User not found" });
         }
         const currCart = user.cart;
-        const idx = currCart.findIndex(item => item.productId.equals(prodID));      
+        const idx = currCart.findIndex(item => item.productId.equals(prodID));
+
         if (idx === -1) {
             const newItem = {
                 productId: prodID,
@@ -19,38 +22,50 @@ const addToCart = async (req, res) => {
         } else {
             currCart[idx].quantity += 1;
         }
+
         await user.save();
         await user.populate('cart.productId');
-        return res.status(httpStatus.OK).json({ 
-            success: true, 
-            message: "Item added successfully", 
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            message: "Item added to cart successfully",
             cart: user.cart
         });
+
     } catch (err) {
         console.error(err);
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ 
-            success: false, 
-            message: "Failed to add item" 
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Failed to add item to cart"
         });
     }
 };
 
-const getCartItems = async (req,res) =>{
-    const { email } = req.body;
-    try{
-        const user = await User.findOne({email});
+const getCartItems = async (req, res) => {
+    try {
+        const { email } = req.user;
+        const user = await User.findOne({ email });
+
         if (!user) {
-            return res.status(httpStatus.NOT_FOUND).json({ success: false, message: "User not found" });
+            return res.status(httpStatus.NOT_FOUND).json({ 
+                success: false, 
+                message: "User not found" 
+            });
         }
         await user.populate('cart.productId');
-        res.status(httpStatus.OK).json({success:true,cart:user.cart,message:"items fetched successfully"});
-    } catch (err){
+        res.status(httpStatus.OK).json({
+            success: true,
+            cart: user.cart,
+            message: "Items fetched successfully"
+        });
+    } catch (err) {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ 
             success: false, 
-            message: "error fetching data" 
+            message: "Error fetching data" 
         });
     }
 }
+
 
 
 const addToWishList = async (req, res) => {

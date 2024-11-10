@@ -1,6 +1,14 @@
-import Card from './Card'
+import Card from './Card';
+import React, { useContext, useEffect } from 'react';
+import { StoreContext } from '../Context/StoreContext';
 
 const FlashSales = () => {
+    const { featured, fetchFeaturedProducts } = useContext(StoreContext);
+
+    useEffect(() => {
+        fetchFeaturedProducts();
+    }, []);
+
     return (
         <div className='w-[95%] h-[42rem] md:h-[24rem] lg:h-[25rem] mx-auto mt-10 flex flex-col border-2 border-red-400'>
             <div className='h-[3.5rem] md:h-[20%] w-[30%] flex items-center gap-1'>
@@ -12,14 +20,23 @@ const FlashSales = () => {
                 <p className='font-medium text-[2rem]'>Flash Sales</p>
             </div>
 
-            <div className='flex flex-wrap md:flex-nowrap gap-4 w-full h-[70%] mt-5 border-2 border-red-400 items-center lg:justify-center lg:gap-10'>
-                <Card />
-                <Card />
-                <Card />
-                <Card />
+            <div className='flex flex-wrap lg:flex-nowrap gap-4 w-full h-[70%] mt-5 border-2 border-red-400 items-center lg:justify-center lg:gap-10'>
+                {featured.map((product) => (
+                    <Card
+                        key={product._id}
+                        id={product._id}
+                        name={product.name}
+                        price={product.price}
+                        rating={product.rating}
+                        description={product.description}
+                        image={product.images[0]}
+                    />
+                ))}
             </div>
 
-            <button className='flex justify-center items-center h-[3rem] bg-red-500 w-[12rem] mt-3 self-center rounded-sm text-white md:mt-5 md:h-[4rem]'>view all products</button>
+            <button className='flex justify-center items-center h-[3rem] bg-red-500 w-[12rem] mt-3 self-center rounded-sm text-white md:mt-5 md:h-[4rem]'>
+                View All Products
+            </button>
         </div>
     );
 };

@@ -10,6 +10,15 @@ const getAllProducts = async (req, res) => {
     }
 };
 
+const getFourProducts = async (req, res) => {
+    try {
+        const products = await Product.find().limit(4);
+        res.status(200).json({ success: true, featuredProducts: products });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Error fetching products" });
+    }
+};
+
 const addProduct = async (req, res) => {
     const { name, rating, price, description, inStock, category, images } = req.body;
 
@@ -96,4 +105,4 @@ const deleteProduct = async (req, res) => {
 };
 
 
-export { getAllProducts , addProduct  , deleteProduct, getFilteredProducts};
+export { getAllProducts , addProduct  , deleteProduct, getFilteredProducts , getFourProducts};
