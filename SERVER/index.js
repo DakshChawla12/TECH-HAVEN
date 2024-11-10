@@ -11,6 +11,7 @@ const URL = process.env.MONGO_URL || "mongodb+srv://dakshchawla:doctorDaksh@tech
 import authRoute from './routes/authRoutes.js';
 import productRoute from './routes/productRoute.js';
 import userRoutes from './routes/userRoute.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 import connectDb from './dbConnect.js';
 connectDb(URL)
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use('/auth',authRoute);
 app.use('/user',userRoutes);
 app.use('/products',productRoute);
+app.use('/order',orderRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hello World");

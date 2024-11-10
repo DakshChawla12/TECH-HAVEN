@@ -17,10 +17,6 @@ const Login = () => {
                     <input type="text" className='h-[2.5rem] w-[80%] border-b-2 border-b-gray-300 outline-none' placeholder='email' />
                     <input type="text" className='h-[2.5rem] w-[80%] border-b-2 border-b-gray-300 outline-none' placeholder='password' />
                     <button className='w-[80%] h-[3rem] bg-[#DB4444] text-white mt-1 rounded-sm'>Sign up</button>
-                    <button className='border-2 border-gray-300 w-[80%] h-[3rem] flex justify-center items-center gap-3'>
-                        <img src="/search.png" alt="" className='h-[50%]' />
-                        <span>Sign in with Google</span>
-                    </button>
                     <p className='text-[0.7rem] lg:text-[0.9rem] text-gray-500'>new to TechHaven? <span className='text-gray-700 border-b-2 border-b-gray-500 py-1'>Create account</span></p>
                 </form>
             </div>
