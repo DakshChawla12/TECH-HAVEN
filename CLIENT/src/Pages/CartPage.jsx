@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { StoreContext } from '../Context/StoreContext';
 import { MdDeleteForever } from "react-icons/md";
+import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 
 const CartPage = () => {
     const { getCart, cart, totalPrice, deleteFromCart } = useContext(StoreContext);
@@ -37,8 +38,8 @@ const CartPage = () => {
                             className='w-[90%] h-[5rem] mx-auto flex items-center justify-between text-center'>
 
                             {/* Product Info */}
-                            <div className='w-[40%] flex items-center gap-2 border-2 border-red-500 relative h-[7rem]'>
-                                <div className='flex flex-col justify-center items-start border-2 border-red-500 w-[80%]'>
+                            <div className='w-[40%] flex items-center gap-2 relative h-[7rem]'>
+                                <div className='flex flex-col justify-center items-start w-[80%]'>
                                     <img
                                         src={images[0]}
                                         alt={name}
@@ -53,7 +54,11 @@ const CartPage = () => {
                             <span className='w-[15%] text-[0.7rem] lg:text-[0.9rem]'>${price}</span>
 
                             {/* Quantity */}
-                            <span className='w-[15%] text-[0.7rem] lg:text-[0.9rem]'>{quantity}</span>
+                            <div className='flex items-center justify-between gap-1 border-2 border-red-500'>
+                                <FaAngleDown />
+                                <span className='w-[15%] text-[0.7rem] lg:text-[0.9rem]'>{quantity}</span>
+                                <FaAngleUp />
+                            </div>
 
                             {/* Subtotal */}
                             <span className='w-[20%] text-[0.7rem] lg:text-[0.9rem]'>
@@ -82,7 +87,7 @@ const CartPage = () => {
                             <span className='text-[0.8rem] lg:text-[1rem]'>Total</span>
                             <span className='text-[0.8rem] lg:text-[1rem]'>{totalPrice + 40}$</span>
                         </div>
-                        <button className='text-[0.8rem] bg-[#DB4444] text-white w-[70%] lg:w-[60%] h-[2rem] mx-auto p-1 rounded-sm'>proceed to checkout</button>
+                        <button className='text-[0.7rem] bg-[#DB4444] text-white w-[90%] lg:w-[60%] h-[2rem] mx-auto py-1 rounded-sm'>proceed to checkout</button>
                     </div>
                 </div>
             </div>
