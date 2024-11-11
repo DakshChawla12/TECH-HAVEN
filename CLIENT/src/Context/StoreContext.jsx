@@ -10,6 +10,7 @@ const StoreContextProvider = ({ children }) => {
 
     const [featured, setFeatured] = useState([]);
     const [cart, setCart] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
 
     const handleSignUp = async (signUpDetails) => {
         const { name, email, password, phone } = signUpDetails;
@@ -55,6 +56,16 @@ const StoreContextProvider = ({ children }) => {
         }
     }
 
+    const calculateTotal = (cartItems) => {
+        const total = cartItems.reduce((sum, item) => {
+            const price = item.productId.price;
+            const quantity = item.quantity;
+            return sum + price * quantity;
+        }, 0);
+
+        setTotalPrice(total);
+    };
+
     const getCart = async () => {
         const token = localStorage.getItem('token');
 
@@ -68,7 +79,10 @@ const StoreContextProvider = ({ children }) => {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            setCart(response.data.cart);
+            if (response.data.success) {
+                setCart(response.data.cart);
+                calculateTotal(response.data.cart);
+            }
         } catch (error) {
             console.error('Error fetching cart:', error);
         }
@@ -100,6 +114,31 @@ const StoreContextProvider = ({ children }) => {
         }
     }
 
+    const deleteFromCart = async (prodID) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('No token found');
+            return;
+        }
+        try {
+            const response = await axios.delete(
+                `http://localhost:5555/user/cart/${prodID}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data.success) {
+                setCart(response.data.cart);
+                calculateTotal(response.data.cart);
+            }
+        } catch (error) {
+            console.error('Error deleting from cart:', error);
+        }
+    };
+
+
 
 
 
@@ -110,7 +149,9 @@ const StoreContextProvider = ({ children }) => {
         handleLogin,
         getCart,
         cart,
-        addToCart
+        addToCart,
+        totalPrice,
+        deleteFromCart
     };
 
     return (
