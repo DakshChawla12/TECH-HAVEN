@@ -9,6 +9,7 @@ const StoreContextProvider = ({ children }) => {
     const navigate = useNavigate();
 
     const [featured, setFeatured] = useState([]);
+    const [cart, setCart] = useState([]);
 
     const handleSignUp = async (signUpDetails) => {
         const { name, email, password, phone } = signUpDetails;
@@ -61,18 +62,45 @@ const StoreContextProvider = ({ children }) => {
             console.log('No token found');
             return;
         }
-
         try {
             const response = await axios.get('http://localhost:5555/user/cart', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
-            console.log('User Cart:', response.data);
+            setCart(response.data.cart);
         } catch (error) {
             console.error('Error fetching cart:', error);
         }
     };
+
+    const addToCart = async (prodID) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('No token found');
+            return;
+        }
+        try {
+            const response = await axios.post(
+                'http://localhost:5555/user/addToCart',
+                {
+                    prodID,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            setCart(response.data.cart);
+            navigate('/cart');
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+        }
+    }
+
+
 
 
     const contextValue = {
@@ -80,7 +108,9 @@ const StoreContextProvider = ({ children }) => {
         handleSignUp,
         fetchFeaturedProducts,
         handleLogin,
-        getCart
+        getCart,
+        cart,
+        addToCart
     };
 
     return (

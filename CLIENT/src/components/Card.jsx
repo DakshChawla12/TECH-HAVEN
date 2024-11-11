@@ -2,8 +2,17 @@ import { FaStar } from 'react-icons/fa';
 import { CiHeart } from "react-icons/ci";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoIosAdd } from "react-icons/io";
+import React, { useContext } from 'react';
+import { StoreContext } from '../Context/StoreContext';
+/** addToCart */
 
 const Card = ({ id, name, price, rating, description, image }) => {
+
+    const { addToCart } = useContext(StoreContext);
+    const handleAddToCart = () => {
+        addToCart(id);
+    }
+
     return (
         <div className='relative w-[47.5%] sm:w-[31%] lg:w-[20%] h-[13.7rem] border-2 border-red-400 group'>
             {/* Image and Icons Section */}
@@ -16,7 +25,7 @@ const Card = ({ id, name, price, rating, description, image }) => {
                 <div className='flex flex-col gap-2 absolute top-2 right-2'>
                     <CiHeart className='h-[1.5rem] w-[1.5rem] 1.5xl:h-[2rem] 1.5xl:w-[2rem] rounded-full text-[0.8rem] p-1 bg-white' />
                     <IoEyeOutline className='h-[1.5rem] w-[1.5rem] 1.5xl:h-[1.7rem] 1.5xl:w-[1.7rem] rounded-full p-1 bg-white' />
-                    <IoIosAdd className='h-[1.5rem] w-[1.5rem] 1.5xl:h-[1.7rem] 1.5xl:w-[1.7rem] rounded-full p-1 bg-white' />
+                    <IoIosAdd className='h-[1.5rem] w-[1.5rem] 1.5xl:h-[1.7rem] 1.5xl:w-[1.7rem] rounded-full p-1 bg-white cursor-pointer' onClick={handleAddToCart} />
                 </div>
 
             </div>
