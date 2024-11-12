@@ -51,7 +51,7 @@ const deleteFromCart = async (req, res) => {
             return res.status(httpStatus.NOT_FOUND).json({ success: false, message: "User not found" });
         }
 
-        const productIndex = user.cart.findIndex(item => item.productId.equals(prodID));
+        const productIndex = user.cart.findIndex(item => item.productId._id.equals(prodID));
         if (productIndex === -1) {
             return res.status(httpStatus.NOT_FOUND).json({ success: false, message: "Product not found in cart" });
         }
@@ -70,6 +70,44 @@ const deleteFromCart = async (req, res) => {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: "Failed to remove product from cart"
+        });
+    }
+};
+
+const updateQuantity = async (req, res) => {
+    const { prodID, change } = req.body;
+    const { email } = req.user;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(httpStatus.NOT_FOUND).json({ success: false, message: "User not found" });
+        }
+
+        const productIndex = user.cart.findIndex(item => item.productId._id.equals(prodID));
+        if (productIndex === -1) {
+            return res.status(httpStatus.NOT_FOUND).json({ success: false, message: "Product not found in cart" });
+        }
+
+        user.cart[productIndex].quantity += change;
+
+        if (user.cart[productIndex].quantity < 1) {
+            user.cart.splice(productIndex, 1);
+        }
+
+        await user.save();
+        await user.populate('cart.productId');
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            message: "Cart updated successfully",
+            cart: user.cart
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Failed to update cart"
         });
     }
 };
@@ -99,7 +137,6 @@ const getCartItems = async (req, res) => {
         });
     }
 }
-
 
 
 const addToWishList = async (req, res) => {
@@ -153,4 +190,4 @@ const getWishList = async (req,res) => {
     }
 }
 
-export { addToCart , addToWishList , getCartItems , getWishList , deleteFromCart};
+export { addToCart , addToWishList , getCartItems , getWishList , deleteFromCart , updateQuantity};

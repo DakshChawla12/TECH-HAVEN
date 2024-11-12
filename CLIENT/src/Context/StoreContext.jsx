@@ -139,7 +139,34 @@ const StoreContextProvider = ({ children }) => {
     };
 
 
+    const updateCart = async (prodID, change) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('No token found');
+            return;
+        }
+        try {
+            const response = await axios.post(
+                'http://localhost:5555/user/cart/updateQuantity',
+                {
+                    prodID,
+                    change
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
 
+            if (response.data.success) {
+                setCart(response.data.cart);
+                calculateTotal(response.data.cart);
+            }
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+        }
+    }
 
 
     const contextValue = {
@@ -151,7 +178,8 @@ const StoreContextProvider = ({ children }) => {
         cart,
         addToCart,
         totalPrice,
-        deleteFromCart
+        deleteFromCart,
+        updateCart
     };
 
     return (

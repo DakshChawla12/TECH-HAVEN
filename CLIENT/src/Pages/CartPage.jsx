@@ -4,7 +4,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 
 const CartPage = () => {
-    const { getCart, cart, totalPrice, deleteFromCart } = useContext(StoreContext);
+    const { getCart, cart, totalPrice, deleteFromCart, updateCart } = useContext(StoreContext);
 
     // Fetch cart on component mount
     useEffect(() => {
@@ -13,6 +13,10 @@ const CartPage = () => {
 
     const handleDelete = (prodID) => {
         deleteFromCart(prodID);
+    }
+
+    const handleUpdate = (prodID, change) => {
+        updateCart(prodID, change);
     }
 
     return (
@@ -55,9 +59,9 @@ const CartPage = () => {
 
                             {/* Quantity */}
                             <div className='flex items-center justify-between gap-1 border-2 border-red-500'>
-                                <FaAngleDown />
+                                <FaAngleDown onClick={() => { handleUpdate(productId._id, -1) }} className='cursor-pointer' />
                                 <span className='w-[15%] text-[0.7rem] lg:text-[0.9rem]'>{quantity}</span>
-                                <FaAngleUp />
+                                <FaAngleUp onClick={() => { handleUpdate(productId._id, 1) }} className='cursor-pointer' />
                             </div>
 
                             {/* Subtotal */}
