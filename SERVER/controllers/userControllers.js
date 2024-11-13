@@ -140,7 +140,8 @@ const getCartItems = async (req, res) => {
 
 
 const addToWishList = async (req, res) => {
-    const { email, prodID } = req.body;
+    const { email } = req.user;
+    const { prodID } = req.body;
     try {
         const user = await User.findOne({ email });
         if (!user) {
@@ -173,15 +174,53 @@ const addToWishList = async (req, res) => {
     }
 };
 
+const deleteFromWishlist = async (req, res) => {
+    const { email } = req.user;
+    const { prodID } = req.params;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        const productIndex = user.wishlist.findIndex(
+            (item) => item._id.equals(prodID)
+        );
+
+        if (productIndex === -1) {
+            return res.status(404).json({ success: false, message: "Product not found in wishlist" });
+        }
+
+        user.wishlist.splice(productIndex, 1);
+
+        await user.save();
+        await user.populate('wishlist');
+
+        return res.status(200).json({
+            success: true,
+            message: "Product removed from wishlist successfully",
+            wishlist: user.wishlist
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to remove product from wishlist"
+        });
+    }
+};
+
+
 const getWishList = async (req,res) => {
-    const { email } = req.body;
+    const { email } = req.user;
     try{
         const user = await User.findOne({email});
         if (!user) {
             return res.status(httpStatus.NOT_FOUND).json({ success: false, message: "User not found" });
         }
         await user.populate('wishlist');
-        res.status(httpStatus.OK).json({success:true,cart:user.wishlist,message:"items fetched successfully"});
+        res.status(httpStatus.OK).json({success:true,wishlist:user.wishlist,message:"items fetched successfully"});
     } catch (err){
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ 
             success: false, 
@@ -190,4 +229,4 @@ const getWishList = async (req,res) => {
     }
 }
 
-export { addToCart , addToWishList , getCartItems , getWishList , deleteFromCart , updateQuantity};
+export { addToCart , addToWishList , getCartItems , getWishList , deleteFromCart , updateQuantity , deleteFromWishlist};
