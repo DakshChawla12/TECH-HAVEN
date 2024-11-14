@@ -11,6 +11,7 @@ const StoreContextProvider = ({ children }) => {
     const [featured, setFeatured] = useState([]);
     const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [wishlist, setWishlist] = useState([]);
 
     const handleSignUp = async (signUpDetails) => {
         const { name, email, password, phone } = signUpDetails;
@@ -168,6 +169,75 @@ const StoreContextProvider = ({ children }) => {
         }
     }
 
+    const getWishList = async () => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            console.log('No token found');
+            return;
+        }
+        try {
+            const response = await axios.get('http://localhost:5555/user/wishlist', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.data.success) {
+                setWishlist(response.data.wishlist);
+            }
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+        }
+    }
+
+    const addToWishlist = async (prodID) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('No token found');
+            return;
+        }
+        try {
+            const response = await axios.post(
+                'http://localhost:5555/user/wishlist',
+                {
+                    prodID,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            setWishlist(response.data.wishlist);
+            navigate('/wishlist');
+        } catch (error) {
+            console.error('Error fetching wishlist:', error);
+        }
+    }
+
+    const deleteFromWishlist = async (prodID) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('No token found');
+            return;
+        }
+        try {
+            const response = await axios.delete(
+                `http://localhost:5555/user/wishlist/${prodID}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data.success) {
+                setWishlist(response.data.wishlist);
+            }
+        } catch (error) {
+            console.error('Error deleting from wishlist:', error);
+        }
+    }
 
     const contextValue = {
         featured,
@@ -179,7 +249,11 @@ const StoreContextProvider = ({ children }) => {
         addToCart,
         totalPrice,
         deleteFromCart,
-        updateCart
+        updateCart,
+        getWishList,
+        wishlist,
+        addToWishlist,
+        deleteFromWishlist
     };
 
     return (

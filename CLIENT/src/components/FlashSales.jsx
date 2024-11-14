@@ -20,7 +20,7 @@ const FlashSales = () => {
                 <p className='font-medium text-[2rem]'>Flash Sales</p>
             </div>
 
-            <div className='flex flex-wrap lg:flex-nowrap gap-4 w-full h-[70%] mt-5 border-2 border-red-400 items-center lg:justify-center lg:gap-10'>
+            <div className='flex flex-wrap md:flex-nowrap gap-4 w-full h-[70%] mt-5 border-2 border-red-400 items-center lg:justify-center lg:gap-10'>
                 {featured.map((product) => (
                     <Card
                         key={product._id}

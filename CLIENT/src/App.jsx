@@ -6,6 +6,7 @@ import HomePage from './Pages/HomePage';
 import Signup_page from './Pages/Signup_page';
 import { Routes, Route } from 'react-router-dom';
 import CartPage from './Pages/CartPage';
+import WishlistPage from './Pages/WishlistPage';
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path='/signup' element={<Signup_page />} />
         <Route path='/login' element={<Signup_page />} />
         <Route path='/cart' element={<CartPage />} />
+        <Route path='/wishlist' element={<WishlistPage />} />
       </Routes>
       <Footer />
     </>
