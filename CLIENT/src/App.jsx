@@ -7,6 +7,7 @@ import Signup_page from './Pages/Signup_page';
 import { Routes, Route } from 'react-router-dom';
 import CartPage from './Pages/CartPage';
 import WishlistPage from './Pages/WishlistPage';
+import AboutUsPage from './Pages/AboutUsPage';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path='/login' element={<Signup_page />} />
         <Route path='/cart' element={<CartPage />} />
         <Route path='/wishlist' element={<WishlistPage />} />
+        <Route path='/about' element={<AboutUsPage />} />
       </Routes>
       <Footer />
     </>

@@ -3,7 +3,7 @@ import { StoreContext } from '../Context/StoreContext';
 
 const Login = () => {
 
-    const { handleLogin } = useContext(StoreContext);
+    const { handleLogin, handleNavigation } = useContext(StoreContext);
     const [loginDetails, setLoginDetails] = useState({
         email: '',
         password: ''
@@ -17,6 +17,10 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         handleLogin(loginDetails);
+    }
+
+    const handleRoutes = (page) => {
+        handleNavigation(page);
     }
 
     return (
@@ -35,7 +39,7 @@ const Login = () => {
                     <input type="text" className='h-[2.5rem] w-[80%] border-b-2 border-b-gray-300 outline-none' placeholder='email' name='email' onChange={handleChange} />
                     <input type="text" className='h-[2.5rem] w-[80%] border-b-2 border-b-gray-300 outline-none' placeholder='password' name='password' onChange={handleChange} />
                     <button className='w-[80%] h-[3rem] bg-[#DB4444] text-white mt-1 rounded-sm' type='submit'>Sign in</button>
-                    <p className='text-[0.7rem] lg:text-[0.9rem] text-gray-500'>new to TechHaven? <span className='text-gray-700 border-b-2 border-b-gray-500 py-1'>Create account</span></p>
+                    <p className='text-[0.7rem] lg:text-[0.9rem] text-gray-500'>new to TechHaven? <span className='text-gray-700 border-b-2 border-b-gray-500 py-1' onClick={() => { handleRoutes('/signup') }}>Create account</span></p>
                 </form>
             </div>
 

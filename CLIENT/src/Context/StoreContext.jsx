@@ -13,6 +13,10 @@ const StoreContextProvider = ({ children }) => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [wishlist, setWishlist] = useState([]);
 
+    const handleNavigation = (page) => {
+        navigate(page);
+    }
+
     const handleSignUp = async (signUpDetails) => {
         const { name, email, password, phone } = signUpDetails;
         const url = 'http://localhost:5555/auth/signup'
@@ -241,17 +245,18 @@ const StoreContextProvider = ({ children }) => {
 
     const contextValue = {
         featured,
+        totalPrice,
+        cart,
+        wishlist,
+        handleNavigation,
         handleSignUp,
         fetchFeaturedProducts,
         handleLogin,
         getCart,
-        cart,
         addToCart,
-        totalPrice,
         deleteFromCart,
         updateCart,
         getWishList,
-        wishlist,
         addToWishlist,
         deleteFromWishlist
     };
