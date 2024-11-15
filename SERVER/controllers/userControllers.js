@@ -1,6 +1,31 @@
 import User from '../models/userModel.js';
 import httpStatus from 'http-status-codes';
 
+const getLength = async (req,res) => {
+    const { email } = req.user; 
+
+    try {
+        const user = await User.findOne({email});
+        if (!user) {
+            return res.status(httpStatus.NOT_FOUND).json({ success: false, message: "User not found" });
+        }
+
+        return res.status(httpStatus.OK).json({
+            success: true,
+            message: "Item added to cart successfully",
+            cartLength: user.cart.length,
+            wishListLength:user.wishlist.length
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Failed to add item to cart"
+        });
+    }
+}
+
 const addToCart = async (req, res) => {
     const { prodID } = req.body;
     const { email } = req.user; 
@@ -229,4 +254,4 @@ const getWishList = async (req,res) => {
     }
 }
 
-export { addToCart , addToWishList , getCartItems , getWishList , deleteFromCart , updateQuantity , deleteFromWishlist};
+export { addToCart , addToWishList , getCartItems , getWishList , deleteFromCart , updateQuantity , deleteFromWishlist , getLength};

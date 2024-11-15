@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StoreContext } from '../Context/StoreContext';
 import { IoMenu } from "react-icons/io5";
 import { FaRegHeart } from "react-icons/fa";
@@ -8,7 +8,11 @@ import { CgProfile } from "react-icons/cg";
 
 const Navbar = () => {
 
-    const { handleNavigation } = useContext(StoreContext);
+    const { handleNavigation, counts, fetchLength } = useContext(StoreContext);
+
+    useEffect(() => {
+        fetchLength();
+    }, []);
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
@@ -36,7 +40,7 @@ const Navbar = () => {
 
                     <div className='hidden w-[30%] h-[55%] xl:flex justify-between items-center'>
                         <span className='cursor-pointer' onClick={() => { handleRoutes('/') }}>Home</span>
-                        <span className='cursor-pointer' onClick={() => { handleRoutes('/') }}>Contact</span>
+                        <span className='cursor-pointer' onClick={() => { handleRoutes('/contact') }}>Contact</span>
                         <span className='cursor-pointer' onClick={() => { handleRoutes('/about') }}>About us</span>
                         <span className='cursor-pointer' onClick={() => { handleRoutes('/signup') }}>Sign Up</span>
                     </div>
@@ -46,8 +50,20 @@ const Navbar = () => {
                             placeholder='What are you looking for?'
                             className='w-[60%] bg-[#e6e6e6] placeholder:text-gray-600 text-[0.7rem] h-[60%] px-3 rounded-md'
                         />
-                        <FaRegHeart className='text-2xl' onClick={() => { handleRoutes('/wishlist') }} />
-                        <IoCartOutline className='text-3xl' onClick={() => { handleRoutes('/cart') }} />
+                        <div className="relative cursor-pointer" onClick={() => { handleRoutes('/wishlist') }}>
+                            <FaRegHeart className='text-2xl' />
+                            {counts.wishlist > 0 &&
+                                <div className='h-[1rem] w-[1rem] absolute top-[-3px] right-[-5px] bg-[#DB4444] rounded-full flex items-center justify-center text-white text-[0.5rem]'>{counts.wishlist}</div>}
+                        </div>
+
+                        <div className="relative cursor-pointer" onClick={() => handleRoutes('/cart')}>
+                            <IoCartOutline className='text-3xl' />
+                            {counts.cart > 0 && (
+                                <div className='h-[1rem] w-[1rem] absolute top-[-3px] right-[-5px] bg-[#DB4444] rounded-full flex items-center justify-center text-white text-[0.5rem]'>
+                                    {counts.cart}
+                                </div>
+                            )}
+                        </div>
                         <CgProfile className='text-3xl cursor-pointer' onClick={toggleProfilePopup} />
 
                         {/* Profile Popup */}
@@ -82,7 +98,7 @@ const Navbar = () => {
                     </div>
                     <div className='mt-5 flex flex-col space-y-4'>
                         <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/') }}>Home</span>
-                        <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/') }}>Contact</span>
+                        <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/contact') }}>Contact</span>
                         <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/about') }}>About us</span>
                         <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/signup') }}>Sign Up</span>
                         <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/') }}>Manage My Account</span>

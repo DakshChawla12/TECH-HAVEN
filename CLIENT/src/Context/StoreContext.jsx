@@ -8,6 +8,7 @@ const StoreContextProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
+    const [counts, setCounts] = useState({ wishlist: 0, cart: 0 });
     const [featured, setFeatured] = useState([]);
     const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -58,6 +59,30 @@ const StoreContextProvider = ({ children }) => {
         const { success, featuredProducts } = data;
         if (success) {
             setFeatured(featuredProducts);
+        }
+    }
+
+    const fetchLength = async () => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            console.log('No token found');
+            return;
+        }
+        try {
+            const response = await axios.get('http://localhost:5555/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.data.success) {
+                setCounts({
+                    cart: response.data.cartLength,
+                    wishlist: response.data.wishListLength
+                })
+            }
+        } catch (error) {
+            console.error('Error fetching cart:', error);
         }
     }
 
@@ -113,7 +138,10 @@ const StoreContextProvider = ({ children }) => {
             );
 
             setCart(response.data.cart);
-            navigate('/cart');
+            setCounts(prevCounts => ({
+                ...prevCounts,
+                cart: response.data.cart.length
+            }));
         } catch (error) {
             console.error('Error fetching cart:', error);
         }
@@ -137,12 +165,15 @@ const StoreContextProvider = ({ children }) => {
             if (response.data.success) {
                 setCart(response.data.cart);
                 calculateTotal(response.data.cart);
+                setCounts(prevCounts => ({
+                    ...prevCounts,
+                    cart: response.data.cart.length
+                }));
             }
         } catch (error) {
             console.error('Error deleting from cart:', error);
         }
     };
-
 
     const updateCart = async (prodID, change) => {
         const token = localStorage.getItem('token');
@@ -214,7 +245,10 @@ const StoreContextProvider = ({ children }) => {
             );
 
             setWishlist(response.data.wishlist);
-            navigate('/wishlist');
+            setCounts(prevCounts => ({
+                ...prevCounts,
+                wishlist: response.data.wishlist.length
+            }));
         } catch (error) {
             console.error('Error fetching wishlist:', error);
         }
@@ -237,6 +271,10 @@ const StoreContextProvider = ({ children }) => {
             );
             if (response.data.success) {
                 setWishlist(response.data.wishlist);
+                setCounts(prevCounts => ({
+                    ...prevCounts,
+                    wishlist: response.data.wishlist.length
+                }));
             }
         } catch (error) {
             console.error('Error deleting from wishlist:', error);
@@ -244,10 +282,12 @@ const StoreContextProvider = ({ children }) => {
     }
 
     const contextValue = {
+        counts,
         featured,
         totalPrice,
         cart,
         wishlist,
+        fetchLength,
         handleNavigation,
         handleSignUp,
         fetchFeaturedProducts,

@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 import { StoreContext } from '../Context/StoreContext';
 import WishlistCard from '../components/WishlistCard';
+import FlashSales from '../components/FlashSales';
 
 const WishlistPage = () => {
 
@@ -28,6 +29,9 @@ const WishlistPage = () => {
                     })
                 }
             </div>
+
+            <FlashSales />
+
         </div>
     )
 }
