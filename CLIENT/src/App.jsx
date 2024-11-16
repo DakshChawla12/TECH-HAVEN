@@ -9,11 +9,11 @@ import CartPage from './Pages/CartPage';
 import WishlistPage from './Pages/WishlistPage';
 import AboutUsPage from './Pages/AboutUsPage';
 import ContactPage from './Pages/ContactPage';
+import SingleProductPage from './Pages/SingleProductPage';
 
 const App = () => {
   return (
     <>
-
       <SaleBar />
       <Navbar />
       <Routes>
@@ -24,6 +24,7 @@ const App = () => {
         <Route path='/wishlist' element={<WishlistPage />} />
         <Route path='/about' element={<AboutUsPage />} />
         <Route path='/contact' element={<ContactPage />} />
+        <Route path='/product/:id' element={<SingleProductPage />} />
       </Routes>
       <Footer />
     </>

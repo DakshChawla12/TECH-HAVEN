@@ -14,8 +14,18 @@ const StoreContextProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [wishlist, setWishlist] = useState([]);
-    const [error, setError] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [product, setProduct] = useState(null);
+
+    const fetchDetails = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:5555/products/${id}`);
+            setProduct(response.data.product);
+            console.log(response.data.product);
+        } catch (err) {
+            console.log(err)
+        }
+    };
 
     const handleNavigation = (page) => {
         navigate(page);
@@ -61,6 +71,7 @@ const StoreContextProvider = ({ children }) => {
                 localStorage.setItem('token', jwtToken);
                 localStorage.setItem('name', name);
                 await fetchLength();
+                getCart();
                 navigate('/');
             } else {
                 handleFailure("failed to login");
@@ -343,8 +354,9 @@ const StoreContextProvider = ({ children }) => {
         totalPrice,
         cart,
         wishlist,
-        error,
         loading,
+        product,
+        fetchDetails,
         fetchLength,
         handleNavigation,
         handleSignUp,

@@ -10,6 +10,19 @@ const getAllProducts = async (req, res) => {
     }
 };
 
+const getById = async (req, res) => {
+    try {
+        const { prodID } = req.params;
+        const product = await Product.findById(prodID);
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+        res.status(200).json({ success: true, product, message: "Product fetched successfully" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Error fetching product" });
+    }
+};
+
 const getFourProducts = async (req, res) => {
     try {
         const products = await Product.find().limit(4);
@@ -105,4 +118,4 @@ const deleteProduct = async (req, res) => {
 };
 
 
-export { getAllProducts , addProduct  , deleteProduct, getFilteredProducts , getFourProducts};
+export { getAllProducts , addProduct  , deleteProduct, getFilteredProducts , getFourProducts , getById};
