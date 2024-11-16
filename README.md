@@ -46,15 +46,19 @@ TechHaven is a modern e-commerce platform built using the MERN stack (MongoDB, E
          npm run dev
 
 ## API Endpoints
-  User Authentication
-    POST /auth/signup - Register a new user
-    POST /auth/login - Log in an existing user
-  Cart Management
-    GET /user/cart - Retrieve user's cart
-    POST /user/cart/addToCart - Add an item to the cart
-    DELETE /user/cart/:itemId - Remove an item from the cart
-    POST /user/cart/:itemId - Update an item in the cart
-  Wishlist Management
-    GET /user/wishlist - Retrieve user's wishlist
-    POST /user/wishlist - Add an item to the wishlist
-    DELETE /user/wishlist/:itemId - Remove an item from the wishlist
+
+### User Authentication
+- **POST** `/auth/signup` - Register a new user
+- **POST** `/auth/login` - Log in an existing user
+
+### Cart Management
+- **GET** `/user/cart` - Retrieve user's cart
+- **POST** `/user/cart/addToCart` - Add an item to the cart
+- **DELETE** `/user/cart/:itemId` - Remove an item from the cart
+- **POST** `/user/cart/:itemId` - Update an item in the cart
+
+### Wishlist Management
+- **GET** `/user/wishlist` - Retrieve user's wishlist
+- **POST** `/user/wishlist` - Add an item to the wishlist
+- **DELETE** `/user/wishlist/:itemId` - Remove an item from the wishlist
+
