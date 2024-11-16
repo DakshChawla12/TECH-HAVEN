@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { handleSuccess, handleFailure } from '../utils';
 
 export const StoreContext = createContext(null);
 
@@ -13,6 +14,8 @@ const StoreContextProvider = ({ children }) => {
     const [cart, setCart] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [wishlist, setWishlist] = useState([]);
+    const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const handleNavigation = (page) => {
         navigate(page);
@@ -20,45 +23,67 @@ const StoreContextProvider = ({ children }) => {
 
     const handleSignUp = async (signUpDetails) => {
         const { name, email, password, phone } = signUpDetails;
-        const url = 'http://localhost:5555/auth/signup'
-        const response = await axios.post(url, {
-            name,
-            email,
-            password,
-            phone
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        console.log(response.data);
-        navigate('/');
-    }
+        const url = 'http://localhost:5555/auth/signup';
+        try {
+            const response = await axios.post(
+                url,
+                { name, email, password, phone },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            const { success } = response.data;
+            if (success) {
+                handleSuccess("registered successfully");
+                navigate('/login');
+            } else {
+                handleFailure("failed to register");
+            }
+        } catch (error) {
+            handleFailure("failed to register");
+        }
+    };
 
     const handleLogin = async (loginDetails) => {
         const { email, password } = loginDetails;
-        const url = 'http://localhost:5555/auth/login'
-        const response = await axios.post(url, {
-            email,
-            password
-        }, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-        const { success, jwtToken } = response.data;
-        localStorage.setItem('token', jwtToken);
-        localStorage.setItem('helllo', 1234567890);
-        navigate('/');
-    }
+        const url = 'http://localhost:5555/auth/login';
+
+        try {
+            const response = await axios.post(url, {
+                email,
+                password
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const { success, jwtToken, name } = response.data;
+            if (success) {
+                handleSuccess("logged in successfully");
+                localStorage.setItem('token', jwtToken);
+                localStorage.setItem('name', name);
+                await fetchLength();
+                navigate('/');
+            } else {
+                handleFailure("failed to login");
+            }
+        } catch (error) {
+            handleFailure("failed to login");
+        }
+    };
 
     const fetchFeaturedProducts = async () => {
-        const url = 'http://localhost:5555/products/featured';
-        const response = await axios.get(url);
-        const data = response.data;
-        const { success, featuredProducts } = data;
-        if (success) {
-            setFeatured(featuredProducts);
+        try {
+            const url = 'http://localhost:5555/products/featured';
+            const response = await axios.get(url);
+            const { success, featuredProducts } = response.data;
+            if (success) {
+                setFeatured(featuredProducts);
+            } else {
+                setError(true);
+            }
+        } catch (err) {
+            setError(true);
+        } finally {
+            setLoading(false); // This sets loading to false when fetching ends
         }
     }
 
@@ -121,7 +146,7 @@ const StoreContextProvider = ({ children }) => {
     const addToCart = async (prodID) => {
         const token = localStorage.getItem('token');
         if (!token) {
-            console.log('No token found');
+            handleFailure("please login to add item to cart");
             return;
         }
         try {
@@ -136,14 +161,19 @@ const StoreContextProvider = ({ children }) => {
                     },
                 }
             );
-
-            setCart(response.data.cart);
-            setCounts(prevCounts => ({
-                ...prevCounts,
-                cart: response.data.cart.length
-            }));
+            const { success, message } = response.data;
+            if (success) {
+                handleSuccess(message);
+                setCart(response.data.cart);
+                setCounts(prevCounts => ({
+                    ...prevCounts,
+                    cart: response.data.cart.length
+                }));
+            } else {
+                handleFailure(message);
+            }
         } catch (error) {
-            console.error('Error fetching cart:', error);
+            handleFailure(error.response?.data?.message || 'Failed to add item to cart');
         }
     }
 
@@ -162,15 +192,20 @@ const StoreContextProvider = ({ children }) => {
                     },
                 }
             );
-            if (response.data.success) {
+            const { success, message } = response.data;
+            if (success) {
+                handleSuccess(message);
                 setCart(response.data.cart);
                 calculateTotal(response.data.cart);
                 setCounts(prevCounts => ({
                     ...prevCounts,
                     cart: response.data.cart.length
                 }));
+            } else {
+                handleFailure(message);
             }
         } catch (error) {
+            handleFailure(message);
             console.error('Error deleting from cart:', error);
         }
     };
@@ -208,7 +243,7 @@ const StoreContextProvider = ({ children }) => {
         const token = localStorage.getItem('token');
 
         if (!token) {
-            console.log('No token found');
+            handleFailure("please login to add item to wishlist");
             return;
         }
         try {
@@ -228,7 +263,7 @@ const StoreContextProvider = ({ children }) => {
     const addToWishlist = async (prodID) => {
         const token = localStorage.getItem('token');
         if (!token) {
-            console.log('No token found');
+            handleFailure("please login to add item to wishlist");
             return;
         }
         try {
@@ -243,14 +278,21 @@ const StoreContextProvider = ({ children }) => {
                     },
                 }
             );
-
-            setWishlist(response.data.wishlist);
-            setCounts(prevCounts => ({
-                ...prevCounts,
-                wishlist: response.data.wishlist.length
-            }));
+            const { success, message } = response.data;
+            if (success) {
+                console.log(message);
+                handleSuccess(message);
+                setWishlist(response.data.wishlist);
+                setCounts(prevCounts => ({
+                    ...prevCounts,
+                    wishlist: response.data.wishlist.length
+                }));
+            } else {
+                console.log(message);
+                handleFailure(message);
+            }
         } catch (error) {
-            console.error('Error fetching wishlist:', error);
+            handleFailure(error.response?.data?.message || 'Failed to add item to wishlist');
         }
     }
 
@@ -269,16 +311,30 @@ const StoreContextProvider = ({ children }) => {
                     },
                 }
             );
-            if (response.data.success) {
+            const { success, message } = response.data;
+            if (success) {
+                handleSuccess(message);
                 setWishlist(response.data.wishlist);
                 setCounts(prevCounts => ({
                     ...prevCounts,
                     wishlist: response.data.wishlist.length
                 }));
+            } else {
+                handleFailure(message);
             }
         } catch (error) {
+            handleFailure(message);
             console.error('Error deleting from wishlist:', error);
         }
+    }
+
+    const handleLogout = () => {
+        localStorage.clear();
+        setCounts({
+            cart: 0, wishlist: 0
+        })
+        handleSuccess("logged out successfully");
+        navigate('/login');
     }
 
     const contextValue = {
@@ -287,6 +343,8 @@ const StoreContextProvider = ({ children }) => {
         totalPrice,
         cart,
         wishlist,
+        error,
+        loading,
         fetchLength,
         handleNavigation,
         handleSignUp,
@@ -298,7 +356,8 @@ const StoreContextProvider = ({ children }) => {
         updateCart,
         getWishList,
         addToWishlist,
-        deleteFromWishlist
+        deleteFromWishlist,
+        handleLogout
     };
 
     return (

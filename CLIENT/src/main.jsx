@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import StoreContextProvider from './Context/StoreContext.jsx';
+import 'alertifyjs/build/css/alertify.css';
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>

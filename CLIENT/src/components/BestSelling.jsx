@@ -1,10 +1,11 @@
 import Card from './Card';
 import React, { useContext, useEffect } from 'react';
 import { StoreContext } from '../Context/StoreContext';
+import SmallSpinner from './SmallSpinner';
 
 const BestSelling = () => {
 
-    const { featured, fetchFeaturedProducts } = useContext(StoreContext);
+    const { featured, fetchFeaturedProducts, loading, error } = useContext(StoreContext);
 
     return (
         <div className='w-[95%] h-[42rem] md:h-[27rem] lg:h-[29rem] mx-auto mt-10 flex flex-col border-2 border-red-400'>
@@ -19,21 +20,25 @@ const BestSelling = () => {
 
             </div>
 
-            <div className='flex flex-wrap md:flex-nowrap gap-4 w-full h-[70%] mt-5 border-2 border-red-400 items-center lg:justify-center lg:gap-10'>
-                {featured.map((product) => (
-                    <Card
-                        key={product._id}
-                        id={product._id}
-                        name={product.name}
-                        price={product.price}
-                        rating={product.rating}
-                        description={product.description}
-                        image={product.images[0]}
-                    />
-                ))}
-            </div>
+            {loading ? <SmallSpinner /> :
+                <div className='flex flex-wrap md:flex-nowrap gap-4 w-full h-[70%] mt-5 border-2 border-red-400 items-center lg:justify-center lg:gap-10'>
+                    {featured.map((product) => (
+                        <Card
+                            key={product._id}
+                            id={product._id}
+                            name={product.name}
+                            price={product.price}
+                            rating={product.rating}
+                            description={product.description}
+                            image={product.images[0]}
+                        />
+                    ))}
+                </div>}
 
-            <button className='flex justify-center items-center h-[3rem] bg-red-500 w-[12rem] mt-3 self-center rounded-sm text-white md:mt-5 md:h-[4rem]'>view all products</button>
+            {!loading &&
+                <button className='flex justify-center items-center h-[3rem] bg-red-500 w-[12rem] mt-3 self-center rounded-sm text-white md:mt-5 md:h-[4rem]'>
+                    View All Products
+                </button>}
         </div>
     )
 }

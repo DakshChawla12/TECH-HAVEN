@@ -8,7 +8,7 @@ import { CgProfile } from "react-icons/cg";
 
 const Navbar = () => {
 
-    const { handleNavigation, counts, fetchLength } = useContext(StoreContext);
+    const { handleNavigation, counts, fetchLength, handleLogout } = useContext(StoreContext);
 
     useEffect(() => {
         fetchLength();
@@ -72,7 +72,7 @@ const Navbar = () => {
                                 <div className="flex flex-col space-y-2">
                                     <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/') }}>Manage My Account</span>
                                     <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/') }}>My Orders</span>
-                                    <span className="cursor-pointer hover:text-[#DB4444]">Logout</span>
+                                    <span className="cursor-pointer hover:text-[#DB4444]" onClick={handleLogout}>Logout</span>
                                 </div>
                             </div>
                         )}
