@@ -26,10 +26,8 @@ const getById = async (req, res) => {
 const getFourProducts = async (req, res) => {
     try {
         console.log("Request received to fetch four products"); // Log when the function is invoked
-
         const products = await Product.find().limit(4);
         
-        console.log("Fetched products:", products); // Log fetched products
         res.status(200).json({ success: true, featuredProducts: products });
     } catch (err) {
         console.error("Error fetching four products:", err); // Log any errors

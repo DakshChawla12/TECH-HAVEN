@@ -1,25 +1,35 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FaStar } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { StoreContext } from '../Context/StoreContext';
 
 const SingleProductPage = () => {
     const { id } = useParams();
-    const { product, fetchDetails } = useContext(StoreContext);
+    const { product, fetchDetails, cart, addToCart, addToWishlist, updateCart } = useContext(StoreContext);
     const [index, setIndex] = useState(0);
 
     const changeImage = (idx) => {
         setIndex(idx);
     }
 
+    const handleAddToCart = () => {
+        addToCart(id);
+    }
+    const handleAddToWishlist = () => {
+        addToWishlist(id);
+    }
+    const handleUpdate = (change) => {
+        updateCart(id, change);
+    }
+
     useEffect(() => {
         fetchDetails(id);
     }, [id]);
 
-    // Add a loading state or a conditional check to prevent errors
     if (!product || !product.name) {
         return <div>Loading...</div>;
     }
+
+    const cartItem = cart.find((item) => item.productId._id === id);
 
     return (
         <div className='w-[85%] h-[35rem] border-2 border-red-500 mt-16 mx-auto flex flex-col gap-5 justify-between md:flex-row'>
@@ -53,10 +63,15 @@ const SingleProductPage = () => {
                     <span className='font-medium md:text-[1rem] lg:text-[1.2rem]'>{product.price}</span>
                     <p className='text-[0.8rem] md:text-[0.9rem] lg:text-[1rem]'>{product.description}</p>
                 </div>
-                <div className='h-[50%] w-[75%] border-2 border-red-500 flex flex-col gap-2'>
-                    <div className='w-[60%] h-[30%] md:w-[90%] md:h-[20%] border-2 border-red-500 flex gap-4 items-center'>
-                        <div className='w-[40%] h-[100%] border-2 border-red-500 md:w-[50%]'></div>
-                        <button className='w-[50%] h-[100%] text-white bg-green-600 text-[0.7rem] sm:text-base'>Add to wishlist</button>
+                <div className='h-[50%] w-[75%]  flex flex-col gap-2'>
+                    <div className='w-[60%] h-[30%] md:w-[90%] md:h-[20%] flex gap-4 items-center'>
+                        {cartItem ?
+                            <div className='w-[40%] h-[100%] border-2 border-gray-500 md:w-[50%] flex items-center gap-1 rounded-md'>
+                                <button className='w-[32%] h-[100%] border-r-2 border-gray-500 bg-red-500 text-[2.2rem] rounded-sm text-white cursor-pointer' onClick={() => { handleUpdate(-1) }}>-</button>
+                                <span className='w-[32%] h-[100%]  flex items-center justify-center'>{cartItem.quantity}</span>
+                                <button className='w-[32%] h-[100%] bg-red-500 text-[1.8rem] text-white border-l-2 border-gray-500 rounded-sm cursor-pointer' onClick={() => { handleUpdate(1) }}>+</button>
+                            </div> : <button className='w-[50%] h-[100%] text-white bg-green-600 text-[0.7rem] sm:text-base rounded-sm' onClick={handleAddToCart}>Add to cart</button>}
+                        <button className='w-[50%] h-[100%] text-white bg-green-600 text-[0.7rem] sm:text-base rounded-sm' onClick={handleAddToWishlist}>Add to wishlist</button>
                     </div>
                     <div className='w-[65%] h-[65%] md:w-[90%] border-2 border-red-500'></div>
                 </div>

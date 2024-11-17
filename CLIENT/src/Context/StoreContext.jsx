@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { handleSuccess, handleFailure } from '../utils';
@@ -16,6 +16,14 @@ const StoreContextProvider = ({ children }) => {
     const [wishlist, setWishlist] = useState([]);
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            getCart(); // Fetch the cart when the user is logged in
+        }
+    }, []);
+
 
     const fetchDetails = async (id) => {
         try {
@@ -71,7 +79,6 @@ const StoreContextProvider = ({ children }) => {
                 localStorage.setItem('token', jwtToken);
                 localStorage.setItem('name', name);
                 await fetchLength();
-                getCart();
                 navigate('/');
             } else {
                 handleFailure("failed to login");

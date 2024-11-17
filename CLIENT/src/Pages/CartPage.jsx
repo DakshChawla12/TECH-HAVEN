@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StoreContext } from '../Context/StoreContext';
 import { MdDeleteForever } from "react-icons/md";
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 
 const CartPage = () => {
-    const { cart, totalPrice, deleteFromCart, updateCart } = useContext(StoreContext);
+    const { cart, totalPrice, deleteFromCart, updateCart, getCart } = useContext(StoreContext);
     const userToken = localStorage.getItem('token'); // Check if user token exists
 
     // Handle delete item from cart
@@ -16,6 +16,10 @@ const CartPage = () => {
     const handleUpdate = (prodID, change) => {
         updateCart(prodID, change);
     };
+
+    useEffect(() => {
+        getCart();
+    }, [])
 
     // If token is not found, show a message
     if (!userToken) {
