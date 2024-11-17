@@ -10,6 +10,7 @@ import WishlistPage from './Pages/WishlistPage';
 import AboutUsPage from './Pages/AboutUsPage';
 import ContactPage from './Pages/ContactPage';
 import SingleProductPage from './Pages/SingleProductPage';
+import ProfilePage from './Pages/ProfilePage';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path='/about' element={<AboutUsPage />} />
         <Route path='/contact' element={<ContactPage />} />
         <Route path='/product/:id' element={<SingleProductPage />} />
+        <Route path='/profile' element={<ProfilePage />} />
       </Routes>
       <Footer />
     </>
