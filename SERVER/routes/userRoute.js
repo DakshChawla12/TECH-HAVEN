@@ -8,8 +8,8 @@ router.route('/profile')
     .post(authenticateToken,changeUserDetails);
 router.get('/',authenticateToken,getLength)
 router.get('/cart',authenticateToken,getCartItems);
-router.delete('/cart/:prodID', authenticateToken, deleteFromCart);
 router.post('/cart/updateQuantity',authenticateToken,updateQuantity);
+router.delete('/cart/:prodID', authenticateToken, deleteFromCart);
 router.post('/addToCart',authenticateToken,addToCart);
 router.route('/wishlist')
     .get(authenticateToken,getWishList)

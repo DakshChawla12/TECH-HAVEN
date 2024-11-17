@@ -4,11 +4,12 @@ import { IoEyeOutline } from "react-icons/io5";
 import { IoIosAdd } from "react-icons/io";
 import React, { useContext } from 'react';
 import { StoreContext } from '../Context/StoreContext';
+import { handleFailure } from '../utils';
 /** addToCart */
 
 const Card = ({ id, name, price, rating, description, image }) => {
 
-    const { addToCart, addToWishlist } = useContext(StoreContext);
+    const { addToCart, addToWishlist, handleNavigation } = useContext(StoreContext);
     const handleAddToCart = () => {
         addToCart(id);
     }
@@ -16,8 +17,17 @@ const Card = ({ id, name, price, rating, description, image }) => {
         addToWishlist(id);
     }
 
+    const handleProductClick = () => {
+        if (!localStorage.getItem('token')) {
+            console.log("error");
+            handleFailure("please login to view full details");
+            return;
+        }
+        handleNavigation(`/product/${id}`); // Redirect to the details page based on the ID
+    };
+
     return (
-        <div className='relative w-[47%] sm:w-[31%] md:w-[25%] lg:w-[20%] h-[13.7rem] border-2 border-red-400 group'>
+        <div className='relative w-[47%] sm:w-[31%] md:w-[25%] lg:w-[20%] h-[13.7rem] border-2 border-red-400 group' onClick={handleProductClick}>
             {/* Image and Icons Section */}
             <div className="h-[70%] w-[100%] relative flex items-center justify-center 1.5xl:h-[65%] bg-[#f0efef]">
                 <img
