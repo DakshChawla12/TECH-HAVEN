@@ -89,10 +89,8 @@ const StoreContextProvider = ({ children }) => {
             if (success) {
                 setFeatured(featuredProducts);
             } else {
-                setError(true);
             }
         } catch (err) {
-            setError(true);
         } finally {
             setLoading(false); // This sets loading to false when fetching ends
         }

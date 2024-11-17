@@ -5,7 +5,7 @@ import SmallSpinner from './SmallSpinner';
 
 const BestSelling = () => {
 
-    const { featured, fetchFeaturedProducts, loading, error } = useContext(StoreContext);
+    const { featured, fetchFeaturedProducts, loading } = useContext(StoreContext);
 
     return (
         <div className='w-[95%] h-[42rem] md:h-[27rem] lg:h-[29rem] mx-auto mt-10 flex flex-col border-2 border-red-400'>

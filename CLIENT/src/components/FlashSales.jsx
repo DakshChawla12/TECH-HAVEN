@@ -4,7 +4,7 @@ import { StoreContext } from '../Context/StoreContext';
 import SmallSpinner from './SmallSpinner';
 
 const FlashSales = () => {
-    const { featured, fetchFeaturedProducts, loading, error } = useContext(StoreContext);
+    const { featured, fetchFeaturedProducts, loading } = useContext(StoreContext);
 
     useEffect(() => {
         fetchFeaturedProducts();

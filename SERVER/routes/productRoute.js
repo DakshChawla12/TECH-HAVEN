@@ -7,10 +7,11 @@ router.route('/')
     .post(addProduct)
     .delete(deleteProduct)
 
-router.route('/:prodID').get(getById);
-
+    
 router.route('/featured')
     .get(getFourProducts)
+    
+router.route('/:prodID').get(getById);
 
 router.route('/filter')
     .get(getFilteredProducts)
