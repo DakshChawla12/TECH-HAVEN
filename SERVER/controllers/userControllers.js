@@ -1,6 +1,7 @@
 import User from '../models/userModel.js';
 import httpStatus from 'http-status-codes';
 import bcrypt from 'bcrypt';
+import {generateToken} from '../utils.js';
 
 // *** profile controllers *** //
 
@@ -23,6 +24,7 @@ const getUserDetails = async (req,res) => {
     }
 }
 
+
 const changeUserDetails = async (req, res) => {
     const { email } = req.user;
     const { NewName, NewMail, NewPhone, currPassword, newPassword } = req.body;
@@ -30,35 +32,49 @@ const changeUserDetails = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(httpStatus.NOT_FOUND).json({ success: false, message: "User not found" });
+            return res.status(404).json({ success: false, message: "User not found" });
         }
+
         if (NewName) user.name = NewName;
         if (NewMail) user.email = NewMail;
         if (NewPhone) user.phone = NewPhone;
+
         if (newPassword) {
             if (!currPassword) {
-                return res.status(httpStatus.BAD_REQUEST).json({ success: false, message: "Current password is required to change password" });
+                return res.status(400).json({ success: false, message: "Current password is required to change password" });
             }
             const isMatch = await bcrypt.compare(currPassword, user.password);
             if (!isMatch) {
-                return res.status(httpStatus.UNAUTHORIZED).json({ success: false, message: "Invalid current password" });
+                return res.status(401).json({ success: false, message: "Invalid current password" });
             }
             const isSamePassword = await bcrypt.compare(newPassword, user.password);
             if (isSamePassword) {
-                return res.status(httpStatus.BAD_REQUEST).json({ success: false, message: "New password must be different from the current password" });
+                return res.status(400).json({ success: false, message: "New password must be different from the current password" });
             }
             const hashedPassword = await bcrypt.hash(newPassword, 10);
             user.password = hashedPassword;
         }
+
         await user.save();
+        let token;
+        if (NewMail) {
+            token =generateToken(NewMail,user._id);
+        }
+
         const { password, ...userWithoutPassword } = user.toObject();
 
-        return res.status(httpStatus.OK).json({ success: true, message: "Details Updated", user: userWithoutPassword });
+        return res.status(200).json({
+            success: true,
+            message: "Details Updated",
+            user: userWithoutPassword,
+            token: token || null,
+        });
     } catch (err) {
         console.error(err);
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: "Internal Server Error" });
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
+
 
 
 // *** cart and wishlist controllers *** //

@@ -16,6 +16,11 @@ const StoreContextProvider = ({ children }) => {
     const [wishlist, setWishlist] = useState([]);
     const [loading, setLoading] = useState(true);
     const [product, setProduct] = useState(null);
+    const [profile, setProfile] = useState({
+        name: '',
+        email: '',
+        phone: ''
+    })
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -23,6 +28,68 @@ const StoreContextProvider = ({ children }) => {
             getCart(); // Fetch the cart when the user is logged in
         }
     }, []);
+
+    const getUserDetails = async () => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            console.log('No token found');
+            handleFailure("please login to view your details");
+            return;
+        }
+        try {
+            const response = await axios.get('http://localhost:5555/user/profile', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (response.data.success) {
+                setProfile({
+                    name: response.data.userDetails.name,
+                    email: response.data.userDetails.email,
+                    phone: response.data.userDetails.phone
+                })
+            }
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+        }
+    }
+
+    const changeUserDetails = async (details) => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            console.log('No token found');
+            handleFailure("Please login to view your details");
+            return;
+        }
+        try {
+            const response = await axios.post(
+                "http://localhost:5555/user/profile",
+                details,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                }
+            );
+            if (response.data.success) {
+                setProfile({
+                    name: response.data.user.name,
+                    email: response.data.user.email,
+                    phone: response.data.user.phone,
+                });
+                handleSuccess("Details Updated");
+                if (response.data.token) {
+                    localStorage.setItem('token', response.data.token);
+                }
+            }
+        } catch (error) {
+            handleFailure("Failed to update details");
+            console.error('Error updating details:', error);
+        }
+    };
 
 
     const fetchDetails = async (id) => {
@@ -361,6 +428,7 @@ const StoreContextProvider = ({ children }) => {
         wishlist,
         loading,
         product,
+        profile,
         fetchDetails,
         fetchLength,
         handleNavigation,
@@ -374,7 +442,9 @@ const StoreContextProvider = ({ children }) => {
         getWishList,
         addToWishlist,
         deleteFromWishlist,
-        handleLogout
+        handleLogout,
+        getUserDetails,
+        changeUserDetails
     };
 
     return (

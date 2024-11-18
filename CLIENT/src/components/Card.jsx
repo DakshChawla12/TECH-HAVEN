@@ -27,7 +27,7 @@ const Card = ({ id, name, price, rating, description, image }) => {
     };
 
     return (
-        <div className='relative w-[47%] sm:w-[31%] md:w-[25%] lg:w-[20%] h-[13.7rem] border-2 border-red-400 group' onClick={handleProductClick}>
+        <div className='relative w-[47%] sm:w-[31%] md:w-[25%] lg:w-[20%] h-[13.7rem] border-2 border-red-400 group'>
             {/* Image and Icons Section */}
             <div className="h-[70%] w-[100%] relative flex items-center justify-center 1.5xl:h-[65%] bg-[#f0efef]">
                 <img
@@ -37,7 +37,7 @@ const Card = ({ id, name, price, rating, description, image }) => {
                 />
                 <div className='flex flex-col gap-2 absolute top-2 right-2'>
                     <CiHeart className='h-[1.5rem] w-[1.5rem] 1.5xl:h-[2rem] 1.5xl:w-[2rem] rounded-full text-[0.8rem] p-1 bg-white cursor-pointer' onClick={handleAddToWishlist} />
-                    <IoEyeOutline className='h-[1.5rem] w-[1.5rem] 1.5xl:h-[1.7rem] 1.5xl:w-[1.7rem] rounded-full p-1 bg-white' />
+                    <IoEyeOutline className='h-[1.5rem] w-[1.5rem] 1.5xl:h-[1.7rem] 1.5xl:w-[1.7rem] rounded-full p-1 bg-white' onClick={handleProductClick} />
                     <IoIosAdd className='h-[1.5rem] w-[1.5rem] 1.5xl:h-[1.7rem] 1.5xl:w-[1.7rem] rounded-full p-1 bg-white cursor-pointer' onClick={handleAddToCart} />
                 </div>
 
