@@ -27,6 +27,18 @@ const orderSchema = new Schema({
         type: Number,
         required: true
     },
+    fullName:{
+        type:String,
+        required:true
+    },
+    email:{
+        type:String,
+        required:true
+    },
+    phone:{
+        type:Number,
+        required:true
+    },
     status: {
         type: String,
         enum: ['pending', 'completed', 'shipped', 'cancelled'],
@@ -38,7 +50,7 @@ const orderSchema = new Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['credit_card', 'paypal', 'bank_transfer', 'cash_on_delivery'],
+        enum: ['net_banking', 'cash_on_delivery', 'upi'],
         required: true
     },
     orderDate: {

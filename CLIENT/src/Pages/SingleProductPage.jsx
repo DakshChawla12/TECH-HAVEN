@@ -59,8 +59,8 @@ const SingleProductPage = () => {
             <div className='w-[100%] md:w-[45%] h-[50%] md:h-[100%] border-2 border-red-500 flex flex-col gap-3 justify-center items-center xl:items-start xl:pl-[2rem]'>
                 <div className='h-[45%] w-[75%] border-2 border-red-500 flex flex-col gap-1 md:justify-center md:gap-3'>
                     <p className='text-[1.2rem] font-bold md:text-[1.4rem] lg:text-[1.7rem]'>{product.name}</p>
-                    <span>{product.rating}/5</span>
-                    <span className='font-medium md:text-[1rem] lg:text-[1.2rem]'>{product.price}</span>
+                    <span className='flex items-center gap-5'>{product.rating}/5 <span>In Stock</span> </span>
+                    <span className='font-medium md:text-[1rem] lg:text-[1.2rem]'>${product.price}</span>
                     <p className='text-[0.8rem] md:text-[0.9rem] lg:text-[1rem]'>{product.description}</p>
                 </div>
                 <div className='h-[50%] w-[75%]  flex flex-col gap-2'>
