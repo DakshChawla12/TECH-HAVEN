@@ -9,6 +9,7 @@ const StoreContextProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
+    const [allProducts, setAllProducts] = useState([]);
     const [counts, setCounts] = useState({ wishlist: 0, cart: 0 });
     const [featured, setFeatured] = useState([]);
     const [cart, setCart] = useState([]);
@@ -28,6 +29,19 @@ const StoreContextProvider = ({ children }) => {
             getCart(); // Fetch the cart when the user is logged in
         }
     }, []);
+
+    const getAllProducts = async () => {
+        const url = "http://localhost:5555/products";
+        try {
+            const response = await axios.get(url);
+            const { success, products, message } = response.data;
+            if (success) {
+                setAllProducts(products);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const getUserDetails = async () => {
         const token = localStorage.getItem('token');
@@ -421,6 +435,7 @@ const StoreContextProvider = ({ children }) => {
     }
 
     const contextValue = {
+        allProducts,
         counts,
         featured,
         totalPrice,
@@ -429,6 +444,7 @@ const StoreContextProvider = ({ children }) => {
         loading,
         product,
         profile,
+        getAllProducts,
         fetchDetails,
         fetchLength,
         handleNavigation,

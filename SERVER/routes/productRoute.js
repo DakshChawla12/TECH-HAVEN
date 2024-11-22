@@ -5,13 +5,14 @@ import { addProduct , getAllProducts  , deleteProduct , getFilteredProducts , ge
 router.route('/')
     .get(getAllProducts)
     .post(addProduct)
-    .delete(deleteProduct)
 
     
 router.route('/featured')
     .get(getFourProducts)
     
-router.route('/:prodID').get(getById);
+router.route('/:prodID')
+    .get(getById)
+    .delete(deleteProduct)
 
 router.route('/filter')
     .get(getFilteredProducts)

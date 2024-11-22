@@ -12,6 +12,7 @@ import ContactPage from './Pages/ContactPage';
 import SingleProductPage from './Pages/SingleProductPage';
 import ProfilePage from './Pages/ProfilePage';
 import Checkout from './Pages/Checkout';
+import AdminPanelPage from './Pages/AdminPanelPage';
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
         <Route path='/product/:id' element={<SingleProductPage />} />
         <Route path='/profile' element={<ProfilePage />} />
         <Route path='/checkout' element={<Checkout />} />
+        <Route path='/admin' element={<AdminPanelPage />} />
       </Routes>
       <Footer />
     </>
