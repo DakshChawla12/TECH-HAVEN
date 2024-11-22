@@ -108,9 +108,9 @@ const getFilteredProducts = async (req, res) => {
 
 
 const deleteProduct = async (req, res) => {
-    const { id } = req.body;
+    const { prodID } = req.params;
     try {
-        const result = await Product.deleteOne({ _id: id });
+        const result = await Product.findByIdAndDelete(prodID);
         if (result.deletedCount === 0) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
@@ -121,5 +121,58 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+const editProduct = async (req, res) => {
+    try {
+        const { prodID } = req.params;
+        const { name, price, inStock, description, rating } = req.body;
 
-export { getAllProducts , addProduct  , deleteProduct, getFilteredProducts , getFourProducts , getById};
+        console.log('request received', name, price, inStock, description, rating, prodID);
+
+        if (!prodID) {
+            return res
+                .status(httpStatus.BAD_REQUEST)
+                .json({ success: false, message: "Please provide product ID" });
+        }
+
+        const product = await Product.findById(prodID);
+        if (!product) {
+            return res
+                .status(httpStatus.BAD_REQUEST)
+                .json({ success: false, message: "Invalid product ID" });
+        }
+
+        if (name) product.name = name;
+        if (price !== undefined) product.price = parseFloat(price);
+        if (inStock !== undefined) product.inStock = inStock === 'true' || inStock === true;
+        if (description) product.description = description;
+
+        // Ensure the rating is a valid number
+        if (rating !== undefined) {
+            const parsedRating = parseFloat(rating);
+            if (!isNaN(parsedRating)) {
+                product.rating = parsedRating;
+            } else {
+                return res
+                    .status(httpStatus.BAD_REQUEST)
+                    .json({ success: false, message: "Invalid rating value" });
+            }
+        }
+
+        await product.save();
+
+        const products = await Product.find();
+        res.status(httpStatus.OK).json({
+            success: true,
+            message: `Product with name ${product.name} edited successfully`,
+            products,
+        });
+    } catch (error) {
+        console.error(error);
+        res
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .json({ success: false, message: "Internal server error" });
+    }
+};
+
+
+export { getAllProducts , addProduct  , deleteProduct, getFilteredProducts , getFourProducts , getById, editProduct};

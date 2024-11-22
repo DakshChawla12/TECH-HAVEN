@@ -154,11 +154,12 @@ const StoreContextProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                 },
             });
-            const { success, jwtToken, name } = response.data;
+            const { success, jwtToken, name, isAdmin } = response.data;
             if (success) {
                 handleSuccess("logged in successfully");
                 localStorage.setItem('token', jwtToken);
                 localStorage.setItem('name', name);
+                localStorage.setItem('isAdmin', isAdmin);
                 await fetchLength();
                 navigate('/');
             } else {
@@ -434,6 +435,62 @@ const StoreContextProvider = ({ children }) => {
         navigate('/login');
     }
 
+    const editProduct = async (prodID, productData) => {
+        const url = `http://localhost:5555/products/${prodID}`;
+
+        // Prepare the payload for the PATCH request
+        const dataToSend = {
+            name: productData.name,
+            price: productData.price,
+            inStock: productData.inStock,
+            description: productData.description,
+        };
+
+        // Only add rating to the payload if it is provided
+        if (productData.rating !== undefined && productData.rating !== "") {
+            dataToSend.rating = productData.rating;
+        }
+
+        try {
+            const response = await axios.patch(
+                url,
+                dataToSend,
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            const { success, products } = response.data;
+            if (success) {
+                handleSuccess("Product edited successfully");
+                setAllProducts(products);
+            } else {
+                handleFailure("Failed to edit product");
+            }
+        } catch (error) {
+            console.error(error.response?.data || error.message);
+            handleFailure("Failed to edit product");
+        }
+    };
+
+    const deleteProduct = async (prodID) => {
+        const url = `http://localhost:5555/products/${prodID}`;
+        try {
+            const response = await axios.delete(
+                url,
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            const { success, products } = response.data;
+            if (success) {
+                handleSuccess("Product deleted successfully");
+                setAllProducts(products);
+            } else {
+                handleFailure("Failed to deleted product");
+            }
+        } catch (error) {
+            console.error(error.response?.data || error.message);
+            handleFailure("Failed to deleted product");
+        }
+    }
+
+
     const contextValue = {
         allProducts,
         counts,
@@ -460,7 +517,9 @@ const StoreContextProvider = ({ children }) => {
         deleteFromWishlist,
         handleLogout,
         getUserDetails,
-        changeUserDetails
+        changeUserDetails,
+        editProduct,
+        deleteProduct
     };
 
     return (

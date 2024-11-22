@@ -14,6 +14,7 @@ const Navbar = () => {
         fetchLength();
     }, []);
 
+    const isAdmin = localStorage.getItem('isAdmin')
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isProfilePopupOpen, setIsProfilePopupOpen] = useState(false);
 
@@ -43,6 +44,7 @@ const Navbar = () => {
                         <span className='cursor-pointer' onClick={() => { handleRoutes('/contact') }}>Contact</span>
                         <span className='cursor-pointer' onClick={() => { handleRoutes('/about') }}>About us</span>
                         <span className='cursor-pointer' onClick={() => { handleRoutes('/signup') }}>Sign Up</span>
+                        {isAdmin === "true" && <span className='cursor-pointer' onClick={() => { handleRoutes('/admin') }}>Admin</span>}
                     </div>
                     <div className='hidden w-[20%] h-[55%] xl:flex justify-around items-center relative'>
                         <input

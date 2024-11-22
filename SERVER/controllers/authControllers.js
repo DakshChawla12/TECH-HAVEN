@@ -50,8 +50,15 @@ const login = async (req, res) => {
         if (!isMatch) {
             return res.status(httpStatus.UNAUTHORIZED).json({ success: false, message: "Invalid credentials" });
         }
+
         const jwtToken = await generateToken(user.email, user._id);
-        res.status(httpStatus.OK).json({ success: true, message: "Login successful", jwtToken , name:user.name});
+        res.status(httpStatus.OK).json({
+            success: true,
+            message: "Login successful",
+            jwtToken,
+            name: user.name,
+            isAdmin: user.isAdmin, 
+        });
     } catch (err) {
         console.error(err);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: 'Server error' });
