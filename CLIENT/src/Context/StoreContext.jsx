@@ -9,6 +9,7 @@ const StoreContextProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
+    const [totalPages, setTotalPages] = useState(1);
     const [allProducts, setAllProducts] = useState([]);
     const [counts, setCounts] = useState({ wishlist: 0, cart: 0 });
     const [featured, setFeatured] = useState([]);
@@ -30,18 +31,15 @@ const StoreContextProvider = ({ children }) => {
         }
     }, []);
 
-    const getAllProducts = async () => {
-        const url = "http://localhost:5555/products";
+    const getAllProducts = async (page = 1) => {
         try {
-            const response = await axios.get(url);
-            const { success, products, message } = response.data;
-            if (success) {
-                setAllProducts(products);
-            }
+            const response = await axios.get(`http://localhost:5555/products?page=${page}`);
+            setAllProducts(response.data.products);
+            setTotalPages(response.data.totalPages);
         } catch (error) {
-            console.log(error);
+            console.error('Error fetching products:', error);
         }
-    }
+    };
 
     const getUserDetails = async () => {
         const token = localStorage.getItem('token');
@@ -104,7 +102,6 @@ const StoreContextProvider = ({ children }) => {
             console.error('Error updating details:', error);
         }
     };
-
 
     const fetchDetails = async (id) => {
         try {
@@ -492,6 +489,7 @@ const StoreContextProvider = ({ children }) => {
 
 
     const contextValue = {
+        totalPages,
         allProducts,
         counts,
         featured,

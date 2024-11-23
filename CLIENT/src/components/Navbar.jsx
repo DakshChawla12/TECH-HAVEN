@@ -34,13 +34,13 @@ const Navbar = () => {
         <div className="w-[100%] h-[4rem] md:h-[5rem] flex items-end justify-between px-5 relative">
             {!isMenuOpen && (
                 <>
-                    <h1 className='font-bold text-2xl md:text-4xl'>TechHaven</h1>
+                    <h1 className='font-bold text-2xl md:text-4xl' onClick={() => { handleRoutes('/') }}>TechHaven</h1>
                     <div className="text-[1.7rem] xl:hidden">
                         <IoMenu onClick={handleOpenClose} />
                     </div>
 
                     <div className='hidden w-[30%] h-[55%] xl:flex justify-between items-center'>
-                        <span className='cursor-pointer' onClick={() => { handleRoutes('/') }}>Home</span>
+                        <span className='cursor-pointer' onClick={() => { handleRoutes('/products') }}>Shop</span>
                         <span className='cursor-pointer' onClick={() => { handleRoutes('/contact') }}>Contact</span>
                         <span className='cursor-pointer' onClick={() => { handleRoutes('/about') }}>About us</span>
                         <span className='cursor-pointer' onClick={() => { handleRoutes('/signup') }}>Sign Up</span>

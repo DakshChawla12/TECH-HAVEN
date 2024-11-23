@@ -3,10 +3,26 @@ import httpStatus from 'http-status-codes';
 
 const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find();
-        res.status(httpStatus.OK).json({ success: true, products, message: "Products fetched successfully" });
+        const page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
+        const limit = 4; // Fixed limit of 5 products per page
+
+        const products = await Product.find().skip((page - 1) * limit).limit(limit); // Always limit to 5 products
+
+        const totalProducts = await Product.countDocuments(); // Total number of products
+
+        res.status(200).json({
+            success: true,
+            products,
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / limit),
+            currentPage: page,
+            message: "Products fetched successfully",
+        });
     } catch (err) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: "Error fetching products" });
+        res.status(500).json({
+            success: false,
+            message: "Error fetching products",
+        });
     }
 };
 
