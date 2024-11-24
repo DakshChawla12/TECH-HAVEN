@@ -1,4 +1,5 @@
 import Product from '../models/productModel.js';
+import User from '../models/userModel.js';
 import httpStatus from 'http-status-codes';
 
 const getAllProducts = async (req, res) => {
@@ -51,11 +52,32 @@ const getFourProducts = async (req, res) => {
     }
 };
 
-
 const addProduct = async (req, res) => {
-    const { name, rating, price, description, inStock, category, images } = req.body;
+    const { name, rating, price, description, inStock, category } = req.body;
+    const { email } = req.user;
 
     try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(httpStatus.BAD_REQUEST).json({
+                success: false,
+                message: "Invalid email",
+            });
+        }
+
+        if (!user.isAdmin) {
+            return res.status(httpStatus.UNAUTHORIZED).json({
+                success: false,
+                message: "You don't have access to perform this action",
+            });
+        }
+
+        if (!req.files || req.files.length === 0) {
+            return res.status(httpStatus.BAD_REQUEST).json({ success: false, message: "No images uploaded" });
+        }
+
+        const imageUrls = req.files.map(file => file.path);
+
         const newProduct = new Product({
             name,
             rating,
@@ -63,19 +85,20 @@ const addProduct = async (req, res) => {
             description,
             inStock,
             category,
-            images
+            images:imageUrls,
         });
         await newProduct.save();
 
         return res.status(httpStatus.CREATED).json({
             success: true,
             message: "Product added successfully",
-            product: newProduct
+            product: newProduct,
         });
     } catch (err) {
+        console.error("Error adding product:", err.message);
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: "Failed to add product"
+            message: "Failed to add product",
         });
     }
 };
@@ -125,7 +148,23 @@ const getFilteredProducts = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     const { prodID } = req.params;
+    const { email } = req.user;
     try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(httpStatus.BAD_REQUEST).json({
+                success: false,
+                message: "Invalid email",
+            });
+        }
+
+        if (!user.isAdmin) {
+            return res.status(httpStatus.UNAUTHORIZED).json({
+                success: false,
+                message: "You don't have access to perform this action",
+            });
+        }
+
         const result = await Product.findByIdAndDelete(prodID);
         if (result.deletedCount === 0) {
             return res.status(404).json({ success: false, message: "Product not found" });
@@ -141,8 +180,22 @@ const editProduct = async (req, res) => {
     try {
         const { prodID } = req.params;
         const { name, price, inStock, description, rating } = req.body;
+        const { email } = req.user;
 
-        console.log('request received', name, price, inStock, description, rating, prodID);
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(httpStatus.BAD_REQUEST).json({
+                success: false,
+                message: "Invalid email",
+            });
+        }
+
+        if (!user.isAdmin) {
+            return res.status(httpStatus.UNAUTHORIZED).json({
+                success: false,
+                message: "You don't have access to perform this action",
+            });
+        }
 
         if (!prodID) {
             return res
