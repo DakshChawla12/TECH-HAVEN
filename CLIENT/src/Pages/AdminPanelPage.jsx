@@ -1,9 +1,10 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { StoreContext } from '../Context/StoreContext';
+import { Link } from 'react-router-dom';
 import { MdOutlineModeEdit, MdDeleteForever } from "react-icons/md";
 
 const AdminPanelPage = () => {
-    const { getAllProducts, allProducts, editProduct, deleteProduct } = useContext(StoreContext);
+    const { getAdminProducts, adminProducts, editProduct, deleteProduct } = useContext(StoreContext);
 
     const [selectedProduct, setSelectedProduct] = useState({
         id: "",
@@ -56,7 +57,7 @@ const AdminPanelPage = () => {
     }
 
     useEffect(() => {
-        getAllProducts();
+        getAdminProducts();
     }, []);
 
     return (
@@ -141,8 +142,8 @@ const AdminPanelPage = () => {
 
             <h1 className='text-[2.5rem] font-medium'>Select a product to edit</h1>
 
-            <div className='w-[100%] flex flex-col gap-3'>
-                {allProducts.map((product) => (
+            <div className='w-[100%] h-[20rem] flex flex-col gap-3 overflow-y-auto'>
+                {adminProducts.map((product) => (
                     <div
                         key={product._id}
                         className='h-[4rem] w-[100%] flex items-center justify-between px-4 bg-gray-100'
@@ -165,6 +166,10 @@ const AdminPanelPage = () => {
                     </div>
                 ))}
             </div>
+
+
+            <Link to={'/addProduct'} className='text-[1.5rem] w-[15rem] text-[#DB4444] underline hover:text-red-800'>Add a new product</Link>
+
         </div>
     );
 };

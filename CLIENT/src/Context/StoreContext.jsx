@@ -9,6 +9,7 @@ const StoreContextProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
+    const [adminProducts, setAdminProducts] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [allProducts, setAllProducts] = useState([]);
     const [counts, setCounts] = useState({ wishlist: 0, cart: 0 });
@@ -30,6 +31,15 @@ const StoreContextProvider = ({ children }) => {
             getCart(); // Fetch the cart when the user is logged in
         }
     }, []);
+
+    const getAdminProducts = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5555/products/allProducts`);
+            setAdminProducts(response.data.products);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
 
     const getAllProducts = async (page = 1) => {
         try {
@@ -448,11 +458,19 @@ const StoreContextProvider = ({ children }) => {
             dataToSend.rating = productData.rating;
         }
 
+        // Get the token from localStorage
+        const token = localStorage.getItem('token');
+
         try {
             const response = await axios.patch(
                 url,
                 dataToSend,
-                { headers: { 'Content-Type': 'application/json' } }
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // Send token in header
+                    },
+                }
             );
             const { success, products } = response.data;
             if (success) {
@@ -469,23 +487,68 @@ const StoreContextProvider = ({ children }) => {
 
     const deleteProduct = async (prodID) => {
         const url = `http://localhost:5555/products/${prodID}`;
+
+        // Get the token from localStorage
+        const token = localStorage.getItem('token');
+
         try {
             const response = await axios.delete(
                 url,
-                { headers: { 'Content-Type': 'application/json' } }
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // Send token in header
+                    },
+                }
             );
             const { success, products } = response.data;
             if (success) {
                 handleSuccess("Product deleted successfully");
                 setAllProducts(products);
             } else {
-                handleFailure("Failed to deleted product");
+                handleFailure("Failed to delete product");
             }
         } catch (error) {
             console.error(error.response?.data || error.message);
-            handleFailure("Failed to deleted product");
+            handleFailure("Failed to delete product");
         }
-    }
+    };
+
+
+    const addProduct = async (formData) => {
+        const categoriesArray = formData.category.split(' ');
+        const data = new FormData();
+        data.append('name', formData.name);
+        data.append('price', formData.price);
+        data.append('inStock', formData.inStock);
+        data.append('description', formData.description);
+        data.append('category', JSON.stringify(categoriesArray));
+        Array.from(formData.images).forEach((file, index) => {
+            data.append('images', file);
+        });
+
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await axios.post('http://localhost:5555/products', data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            const { success, products } = response.data;
+            if (success) {
+                handleSuccess("Product Added successfully");
+                setAllProducts(products);
+            } else {
+                handleFailure("Failed to add product");
+            }
+        } catch (error) {
+            console.error(error.response?.data || error.message);
+            handleFailure("Failed to add product");
+        }
+    };
+
 
 
     const contextValue = {
@@ -499,6 +562,7 @@ const StoreContextProvider = ({ children }) => {
         loading,
         product,
         profile,
+        adminProducts,
         getAllProducts,
         fetchDetails,
         fetchLength,
@@ -517,7 +581,9 @@ const StoreContextProvider = ({ children }) => {
         getUserDetails,
         changeUserDetails,
         editProduct,
-        deleteProduct
+        deleteProduct,
+        addProduct,
+        getAdminProducts
     };
 
     return (

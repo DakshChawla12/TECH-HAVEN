@@ -2,7 +2,23 @@ import Product from '../models/productModel.js';
 import User from '../models/userModel.js';
 import httpStatus from 'http-status-codes';
 
-const getAllProducts = async (req, res) => {
+const getAllProducts = async(req,res) => {
+    try {
+        const products = await Product.find();
+        res.status(200).json({
+            success: true,
+            products,
+            message: "Products fetched successfully",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error fetching products",
+        });
+    }
+}
+
+const getAllProductsPage = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1; // Default to page 1 if no page is specified
         const limit = 4; // Fixed limit of 5 products per page
@@ -80,7 +96,7 @@ const addProduct = async (req, res) => {
 
         const newProduct = new Product({
             name,
-            rating,
+            rating:rating || 0,
             price,
             description,
             inStock,
@@ -88,11 +104,12 @@ const addProduct = async (req, res) => {
             images:imageUrls,
         });
         await newProduct.save();
+        const products = await Product.find();
 
         return res.status(httpStatus.CREATED).json({
             success: true,
             message: "Product added successfully",
-            product: newProduct,
+            products,
         });
     } catch (err) {
         console.error("Error adding product:", err.message);
@@ -244,4 +261,4 @@ const editProduct = async (req, res) => {
 };
 
 
-export { getAllProducts , addProduct  , deleteProduct, getFilteredProducts , getFourProducts , getById, editProduct};
+export { getAllProductsPage , addProduct  , deleteProduct, getFilteredProducts , getFourProducts , getById, editProduct, getAllProducts};
