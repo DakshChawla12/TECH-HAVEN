@@ -61,11 +61,11 @@ const AdminPanelPage = () => {
     }, []);
 
     return (
-        <div className='w-[80%] h-auto mx-auto mt-16 border-2 border-red-500 flex flex-col gap-3'>
+        <div className='w-[80%] h-auto mx-auto mt-16 flex flex-col gap-3'>
             <h1 className='text-[2.5rem] font-medium'>Edit Product</h1>
 
             <form
-                className='w-[80%] h-[37rem] border-2 border-green-500 flex flex-col gap-2'
+                className='w-[80%] h-[37rem] flex flex-col gap-2'
                 onSubmit={handleSubmit}
             >
                 <h1 className='text-[1.3rem] font-medium'>
@@ -73,11 +73,11 @@ const AdminPanelPage = () => {
                 </h1>
 
                 {/* Name */}
-                <div className='h-[5rem] w-[60%] flex flex-col gap-2 border-2 border-purple-500'>
+                <div className='h-[5rem] w-[60%] flex flex-col gap-2'>
                     <label className='text-[0.95rem] text-gray-700'>Name:</label>
                     <input
                         type="text"
-                        className='h-[2.2rem] w-[80%] bg-[#E6E6E6] rounded-sm'
+                        className='h-[2.2rem] w-[80%] bg-[#E6E6E6] rounded-sm pl-2'
                         placeholder={selectedProduct.name || 'product name'}
                         name='name'
                         onChange={handleChange}
@@ -85,11 +85,11 @@ const AdminPanelPage = () => {
                 </div>
 
                 {/* Price */}
-                <div className='h-[5rem] w-[60%] flex flex-col gap-2 border-2 border-purple-500'>
+                <div className='h-[5rem] w-[60%] flex flex-col gap-2 '>
                     <label className='text-[0.95rem] text-gray-700'>Price:</label>
                     <input
                         type="number"
-                        className='h-[2.2rem] w-[80%] bg-[#E6E6E6] rounded-sm'
+                        className='h-[2.2rem] w-[80%] bg-[#E6E6E6] rounded-sm  pl-2'
                         placeholder={selectedProduct.price || 'product price'}
                         name='price'
                         onChange={handleChange}
@@ -97,10 +97,10 @@ const AdminPanelPage = () => {
                 </div>
 
                 {/* In Stock */}
-                <div className='h-[5rem] w-[60%] flex flex-col gap-2 border-2 border-purple-500'>
+                <div className='h-[5rem] w-[60%] flex flex-col gap-2 '>
                     <label className='text-[0.95rem] text-gray-700'>In Stock:</label>
                     <select
-                        className='h-[2.2rem] w-[80%] bg-[#E6E6E6] rounded-sm'
+                        className='h-[2.2rem] w-[80%] bg-[#E6E6E6] rounded-sm  pl-2'
                         name='inStock'
                         onChange={handleChange}
                     >
@@ -110,10 +110,10 @@ const AdminPanelPage = () => {
                 </div>
 
                 {/* Description */}
-                <div className='h-[10rem] w-[60%] flex flex-col gap-2 border-2 border-purple-500'>
+                <div className='h-[10rem] w-[60%] flex flex-col gap-2'>
                     <label className='text-[0.95rem] text-gray-700'>Description:</label>
                     <textarea
-                        className='h-[8rem] w-[100%] bg-[#E6E6E6] rounded-sm resize-none'
+                        className='h-[8rem] w-[100%] bg-[#E6E6E6] rounded-sm resize-none pl-2 pt-2'
                         placeholder={selectedProduct.description || 'product description'}
                         name='description'
                         onChange={handleChange}
@@ -121,11 +121,11 @@ const AdminPanelPage = () => {
                 </div>
 
                 {/* Rating */}
-                <div className='h-[5rem] w-[60%] flex flex-col gap-2 border-2 border-purple-500'>
+                <div className='h-[5rem] w-[60%] flex flex-col gap-2'>
                     <label className='text-[0.95rem] text-gray-700'>Rating:</label>
                     <input
                         type="number"
-                        className='h-[2.2rem] w-[80%] bg-[#E6E6E6] rounded-sm'
+                        className='h-[2.2rem] w-[80%] bg-[#E6E6E6] rounded-sm pl-2'
                         placeholder={selectedProduct.rating || 'product rating'}
                         name='rating'
                         onChange={handleChange}
