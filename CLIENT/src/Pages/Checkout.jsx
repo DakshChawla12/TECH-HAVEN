@@ -3,7 +3,7 @@ import { StoreContext } from '../Context/StoreContext';
 
 const Checkout = () => {
 
-    const { cart } = useContext(StoreContext);
+    const { cart, checkOutHandler } = useContext(StoreContext);
 
     const totalPrice = cart.reduce((total, item) => {
         return total + item.productId.price * item.quantity;
@@ -50,7 +50,7 @@ const Checkout = () => {
                 <div className='w-[90%] border-2 border-red-500'>
                     {
                         cart.map((item) => {
-                            return <div className='h-[3rem] w-[100%] flex items-center justify-between'>
+                            return <div key={item._id} className='h-[3rem] w-[100%] flex items-center justify-between'>
                                 <div className='flex items-center gap-4 w-[60%]'>
                                     <img src={item.productId.images[0]} className='h-[2.5rem] w-[2.5rem]' alt="" />
                                     <span className='text-[0.9rem] font-medium'>{item.productId.name}</span>
@@ -92,7 +92,7 @@ const Checkout = () => {
                     </div>
                 </form>
 
-                <button className='h-[3rem] w-[10rem] text-white rounded-sm text-[0.9rem] bg-[#DB4444] mt-10'>Place Order</button>
+                <button className='h-[3rem] w-[10rem] text-white rounded-sm text-[0.9rem] bg-[#DB4444] mt-10' onClick={() => checkOutHandler(totalPrice + 40)}>Place Order</button>
             </div>
 
         </div>

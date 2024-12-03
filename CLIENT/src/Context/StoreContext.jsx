@@ -548,7 +548,47 @@ const StoreContextProvider = ({ children }) => {
             handleFailure("Failed to add product");
         }
     };
+    const checkOutHandler = async (amount) => {
+        try {
+            const { data: { key } } = await axios.get("http://localhost:5555/getKey");
+            const { data: { order } } = await axios.post("http://localhost:5555/payment/checkout", { amount });
 
+            const options = {
+                key, // Replace with your Razorpay key_id
+                amount: order.amount,
+                currency: 'INR',
+                name: 'Daksh',
+                description: 'Test Transaction',
+                order_id: order.id, // Order ID from the backend
+                prefill: {
+                    name: 'Gaurav Kumar',
+                    email: 'gaurav.kumar@example.com',
+                    contact: '9999999999',
+                },
+                theme: {
+                    color: '#F37254',
+                },
+                handler: async function (response) {
+                    // Razorpay returns the payment details here
+                    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
+
+                    console.log("Payment Details:", response);
+
+                    // Send these details to your backend for verification
+                    await axios.post("http://localhost:5555/payment/paymentVerification", {
+                        order_id: razorpay_order_id,
+                        razorpay_payment_id,
+                        razorpay_signature,
+                    });
+                },
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+        } catch (error) {
+            console.error("Error during checkout:", error);
+        }
+    };
 
 
     const contextValue = {
@@ -583,7 +623,8 @@ const StoreContextProvider = ({ children }) => {
         editProduct,
         deleteProduct,
         addProduct,
-        getAdminProducts
+        getAdminProducts,
+        checkOutHandler
     };
 
     return (

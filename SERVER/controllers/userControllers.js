@@ -228,7 +228,6 @@ const getCartItems = async (req, res) => {
             });
         }
         await user.populate('cart.productId');
-        console.log(user.cart);
         res.status(httpStatus.OK).json({
             success: true,
             cart: user.cart,
