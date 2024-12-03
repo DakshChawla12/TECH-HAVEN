@@ -50,35 +50,8 @@ const userSchema = new Schema({
     orders: {
         type: [
             {
-                orderId: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Order' // Reference to the Order model
-                },
-                orderDate: {
-                    type: Date,
-                    default: Date.now
-                },
-                status: {
-                    type: String,
-                    enum: ['pending', 'completed', 'shipped', 'cancelled'],
-                    default: 'pending'
-                },
-                totalAmount: {
-                    type: Number,
-                    required: true
-                },
-                products: [
-                    {
-                        productId: {
-                            type: mongoose.Schema.Types.ObjectId,
-                            ref: 'Product'
-                        },
-                        quantity: {
-                            type: Number,
-                            default: 1
-                        }
-                    }
-                ]
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Order'
             }
         ],
         default: []

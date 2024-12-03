@@ -161,11 +161,13 @@ const StoreContextProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                 },
             });
-            const { success, jwtToken, name, isAdmin } = response.data;
+            const { success, jwtToken, name, isAdmin, phone, useremail } = response.data;
             if (success) {
                 handleSuccess("logged in successfully");
                 localStorage.setItem('token', jwtToken);
                 localStorage.setItem('name', name);
+                localStorage.setItem('phone', phone);
+                localStorage.setItem('email', useremail);
                 localStorage.setItem('isAdmin', isAdmin);
                 await fetchLength();
                 navigate('/');
@@ -548,38 +550,71 @@ const StoreContextProvider = ({ children }) => {
             handleFailure("Failed to add product");
         }
     };
+
     const checkOutHandler = async (amount) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            handleFailure("Please login to place an order");
+            return;
+        }
         try {
             const { data: { key } } = await axios.get("http://localhost:5555/getKey");
             const { data: { order } } = await axios.post("http://localhost:5555/payment/checkout", { amount });
-
+            const name = localStorage.getItem('name');
+            const phone = localStorage.getItem('phone');
+            const email = localStorage.getItem('email');
             const options = {
-                key, // Replace with your Razorpay key_id
+                key,
                 amount: order.amount,
                 currency: 'INR',
                 name: 'Daksh',
                 description: 'Test Transaction',
-                order_id: order.id, // Order ID from the backend
+                order_id: order.id,
                 prefill: {
-                    name: 'Gaurav Kumar',
-                    email: 'gaurav.kumar@example.com',
-                    contact: '9999999999',
+                    name,
+                    email,
+                    contact: phone,
                 },
                 theme: {
                     color: '#F37254',
                 },
                 handler: async function (response) {
-                    // Razorpay returns the payment details here
                     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
 
                     console.log("Payment Details:", response);
 
-                    // Send these details to your backend for verification
-                    await axios.post("http://localhost:5555/payment/paymentVerification", {
-                        order_id: razorpay_order_id,
-                        razorpay_payment_id,
-                        razorpay_signature,
-                    });
+                    try {
+                        const paymentResponse = await axios.post(
+                            "http://localhost:5555/payment/paymentVerification",
+                            {
+                                order_id: razorpay_order_id,
+                                razorpay_payment_id,
+                                razorpay_signature,
+                                cart,
+                                totalAmount: amount,
+                                shippingAddress: "#493 sector 15",
+                            },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+
+                        if (paymentResponse.data.success) {
+                            handleSuccess("order placed successfully");
+                            setCounts(prevCounts => ({
+                                ...prevCounts,
+                                cart: 0
+                            }));
+                            setCart([]);
+                        } else {
+                            handleFailure("failed to place order");
+                        }
+                    } catch (error) {
+                        console.error("Error during payment verification:", error);
+                        navigate('/order-failure'); // Redirect on server error
+                    }
                 },
             };
 
@@ -589,6 +624,7 @@ const StoreContextProvider = ({ children }) => {
             console.error("Error during checkout:", error);
         }
     };
+
 
 
     const contextValue = {

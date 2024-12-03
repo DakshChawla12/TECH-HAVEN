@@ -27,10 +27,6 @@ const orderSchema = new Schema({
         type: Number,
         required: true
     },
-    fullName:{
-        type:String,
-        required:true
-    },
     email:{
         type:String,
         required:true
@@ -46,11 +42,6 @@ const orderSchema = new Schema({
     },
     shippingAddress: {
         type: String,
-        required: true
-    },
-    paymentMethod: {
-        type: String,
-        enum: ['net_banking', 'cash_on_delivery', 'upi'],
         required: true
     },
     orderDate: {

@@ -4,7 +4,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { FaAngleUp, FaAngleDown } from "react-icons/fa";
 
 const CartPage = () => {
-    const { cart, totalPrice, deleteFromCart, updateCart, getCart } = useContext(StoreContext);
+    const { cart, totalPrice, deleteFromCart, updateCart, getCart, handleNavigation } = useContext(StoreContext);
     const userToken = localStorage.getItem('token'); // Check if user token exists
 
     // Handle delete item from cart
@@ -124,7 +124,7 @@ const CartPage = () => {
                             <span className='text-[0.8rem] lg:text-[1rem]'>Total</span>
                             <span className='text-[0.8rem] lg:text-[1rem]'>{totalPrice + 40}$</span>
                         </div>
-                        <button className='bg-[#DB4444] text-white w-[90%] h-[2rem] mx-auto py-1 rounded-sm'>
+                        <button className='bg-[#DB4444] text-white w-[90%] h-[2rem] mx-auto py-1 rounded-sm' onClick={() => handleNavigation('/checkout')}>
                             Proceed to Checkout
                         </button>
                     </div>

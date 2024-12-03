@@ -1,7 +1,9 @@
 import express from 'express';
 const router = express.Router();
-import {placeOrder} from '../controllers/orderControllers.js';
+import {getUserOrders,getAllOrders} from '../controllers/orderControllers.js';
+import {authenticateToken} from '../utils.js';
 
-router.post('/placeOrder',placeOrder);
+router.route('/user-orders').get(authenticateToken,getUserOrders);
+router.route('/allOrders').get(authenticateToken,getAllOrders);
 
 export default router;

@@ -28,7 +28,7 @@ app.use(express.json());
 app.use('/auth',authRoute);
 app.use('/user',userRoutes);
 app.use('/products',productRoute);
-app.use('/order',orderRoutes);
+app.use('/orders',orderRoutes);
 app.use('/payment',paymentRoutes);
 
 app.get('/getKey',(req,res) => {

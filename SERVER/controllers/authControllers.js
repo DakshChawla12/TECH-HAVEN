@@ -58,6 +58,8 @@ const login = async (req, res) => {
             jwtToken,
             name: user.name,
             isAdmin: user.isAdmin, 
+            phone:user.phone,
+            useremail:email
         });
     } catch (err) {
         console.error(err);
