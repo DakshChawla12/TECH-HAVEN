@@ -1,9 +1,36 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { StoreContext } from '../Context/StoreContext';
 
 const Checkout = () => {
 
     const { cart, checkOutHandler } = useContext(StoreContext);
+    const userToken = localStorage.getItem('token');
+
+    const [shippingAddress, setShippingAddress] = useState('');
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setShippingAddress({ ...shippingAddress, [name]: value });
+    }
+
+    const name = localStorage.getItem('name');
+    const phone = localStorage.getItem('phone');
+    const email = localStorage.getItem('email');
+
+    if (!userToken) {
+        return (
+            <div className="w-[80%] h-[50rem] mx-auto mt-16 flex items-center justify-center">
+                <h1 className="text-[2rem] font-medium text-red-500">Please login to checkout</h1>
+            </div>
+        );
+    }
+
+    if (cart.length === 0) {
+        return (
+            <div className="w-[80%] h-[50rem] mx-auto mt-16 flex items-center justify-center">
+                <h1 className="text-[2rem] font-medium text-red-500">Please add something to the cart to checkout</h1>
+            </div>
+        );
+    }
 
     const totalPrice = cart.reduce((total, item) => {
         return total + item.productId.price * item.quantity;
@@ -19,27 +46,19 @@ const Checkout = () => {
 
                     <div className='h-[12%] w-[100%]  flex flex-col gap-4'>
                         <label className='text-[0.9rem] text-gray-500' htmlFor="">Full Name <span className='text-red-500'>*</span></label>
-                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' />
+                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' placeholder={name} disabled />
                     </div>
                     <div className='h-[12%] w-[100%]  flex flex-col gap-4'>
                         <label className='text-[0.9rem] text-gray-500' htmlFor="">Phone No. <span className='text-red-500'>*</span></label>
-                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' />
+                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' placeholder={phone} disabled />
                     </div>
                     <div className='h-[12%] w-[100%]  flex flex-col gap-4'>
                         <label className='text-[0.9rem] text-gray-500' htmlFor="">Email <span className='text-red-500'>*</span></label>
-                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' />
+                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' placeholder={email} disabled />
                     </div>
                     <div className='h-[12%] w-[100%]  flex flex-col gap-4'>
                         <label className='text-[0.9rem] text-gray-500' htmlFor="">Shipping Address <span className='text-red-500'>*</span></label>
-                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' />
-                    </div>
-                    <div className='h-[12%] w-[100%] flex flex-col gap-4'>
-                        <label className='text-[0.9rem] text-gray-500' htmlFor="">City <span className='text-red-500'>*</span></label>
-                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' />
-                    </div>
-                    <div className='h-[12%] w-[100%] flex flex-col gap-4'>
-                        <label className='text-[0.9rem] text-gray-500' htmlFor="">Landmark(optional)</label>
-                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' />
+                        <input type="text" className='h-[2.2rem] w-[100%] bg-[#F5F5F5] rounded-sm' onChange={handleChange} />
                     </div>
 
                 </div>
@@ -76,23 +95,7 @@ const Checkout = () => {
                         <span className='text-[0.9rem]'>{totalPrice + 40}$</span>
                     </div>
                 </div>
-
-                <form className='h-[20%] w-[90%] border-2 border-red-500 flex flex-col'>
-                    <div className='flex items-center gap-3'>
-                        <label htmlFor="">net banking</label>
-                        <input type="radio" className='h-[2rem] text-black' />
-                    </div>
-                    <div className='flex items-center gap-3'>
-                        <label htmlFor="">upi</label>
-                        <input type="radio" className='h-[2rem] text-black' />
-                    </div>
-                    <div className='flex items-center gap-3'>
-                        <label htmlFor="">cash on delivery</label>
-                        <input type="radio" className='h-[2rem] text-black' />
-                    </div>
-                </form>
-
-                <button className='h-[3rem] w-[10rem] text-white rounded-sm text-[0.9rem] bg-[#DB4444] mt-10' onClick={() => checkOutHandler(totalPrice + 40)}>Place Order</button>
+                <button className='h-[3rem] w-[10rem] text-white rounded-sm text-[0.9rem] bg-[#DB4444] mt-10' onClick={() => checkOutHandler(totalPrice + 40, shippingAddress)}>Place Order</button>
             </div>
 
         </div>

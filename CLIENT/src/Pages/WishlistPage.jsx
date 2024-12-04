@@ -6,19 +6,31 @@ import FlashSales from '../components/FlashSales';
 const WishlistPage = () => {
 
     const { getWishList, wishlist } = useContext(StoreContext);
-    useEffect(() => {
-        getWishList();
-    }, []);
+    const userToken = localStorage.getItem('token');
+
+    if (!userToken) {
+        return (
+            <div className='w-full h-screen flex items-center justify-center'>
+                <p className='text-center text-[1.2rem] lg:text-[1.5rem] font-semibold'>
+                    Please log in to view your wishlist.
+                </p>
+            </div>
+        );
+    }
 
     useEffect(() => {
-        console.log(wishlist);
-    }, [wishlist]);
+        if (userToken) {
+            getWishList();
+        }
+    }, []);
+
+
 
 
     return (
         <div className='w-[95%] border-2 border-red-500 mt-16 mx-auto flex flex-col items-center gap-3'>
             <div className='w-[95%] flex border-2 border-red-500 justify-between h-[5rem] items-center pr-4'>
-                <span>Wishlist(4)</span>
+                <span>Wishlist{wishlist.length}</span>
                 <button className='h-[4rem] border-2 border-red-500 w-[8rem] sm:w-[10rem] lg:w-[12rem]'>Move all to bag</button>
             </div>
 

@@ -551,11 +551,15 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
-    const checkOutHandler = async (amount) => {
+    const checkOutHandler = async (amount, shippingAddress) => {
         const token = localStorage.getItem('token');
         if (!token) {
             handleFailure("Please login to place an order");
             return;
+        }
+        if (!shippingAddress || shippingAddress === '') {
+            handleFailure("please enter a valid address");
+            return
         }
         try {
             const { data: { key } } = await axios.get("http://localhost:5555/getKey");

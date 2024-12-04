@@ -18,7 +18,9 @@ const CartPage = () => {
     };
 
     useEffect(() => {
-        getCart();
+        if (userToken) {
+            getCart();
+        }
     }, [])
 
     // If token is not found, show a message

@@ -5,9 +5,12 @@ import { handleFailure } from '../utils';
 const ProfilePage = () => {
 
     const { profile, getUserDetails, changeUserDetails } = useContext(StoreContext);
+    const userToken = localStorage.getItem('token');
 
     useEffect(() => {
-        getUserDetails();
+        if (userToken) {
+            getUserDetails();
+        }
     }, []);
 
 
