@@ -49,7 +49,7 @@ const orderSchema = new Schema({
         default: Date.now
     },
 }, {
-    timestamps: true // Automatically adds `createdAt` and `updatedAt` fields
+    timestamps: true 
 });
 
 const Order = mongoose.model('Order', orderSchema);

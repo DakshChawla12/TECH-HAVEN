@@ -24,6 +24,7 @@ const StoreContextProvider = ({ children }) => {
         email: '',
         phone: ''
     })
+    const [allOrders, setAllOrders] = useState([]);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -629,7 +630,53 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
+    const fetchAllOrders = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            return;
+        }
+        try {
+            const response = await axios.get('http://localhost:5555/orders', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const { orders, success } = response.data;
+            if (success) {
+                setAllOrders(orders);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
+    const changeOrderStatus = async (id, status) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            handleFailure("please login to perform this action")
+            return;
+        }
+        try {
+            const response = await axios.patch(`http://localhost:5555/orders/${id}`,
+                { status },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const { orders, success } = response.data;
+            if (success) {
+                setAllOrders(orders);
+                handleSuccess('order status updated');
+            } else {
+                handleFailure('failed to update status');
+            }
+        } catch (error) {
+            console.log(error);
+            handleFailure('failed to update status');
+        }
+    }
 
     const contextValue = {
         totalPages,
@@ -643,6 +690,7 @@ const StoreContextProvider = ({ children }) => {
         product,
         profile,
         adminProducts,
+        allOrders,
         getAllProducts,
         fetchDetails,
         fetchLength,
@@ -664,7 +712,10 @@ const StoreContextProvider = ({ children }) => {
         deleteProduct,
         addProduct,
         getAdminProducts,
-        checkOutHandler
+        checkOutHandler,
+        setAllOrders,
+        fetchAllOrders,
+        changeOrderStatus
     };
 
     return (

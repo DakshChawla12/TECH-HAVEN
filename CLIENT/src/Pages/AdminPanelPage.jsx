@@ -167,8 +167,10 @@ const AdminPanelPage = () => {
                 ))}
             </div>
 
-
-            <Link to={'/addProduct'} className='text-[1.5rem] w-[15rem] text-[#DB4444] underline hover:text-red-800'>Add a new product</Link>
+            <div className='flex items-center gap-4'>
+                <Link to={'/addProduct'} className='text-[1.5rem] w-[15rem] text-[#DB4444] underline hover:text-red-800'>Add a new product</Link>
+                <Link to={'/allOrders'} className='text-[1.5rem] w-[15rem] text-[#DB4444] underline hover:text-red-80'>View All Orders</Link>
+            </div>
 
         </div>
     );
