@@ -4,7 +4,7 @@ import { handleFailure } from '../utils';
 
 const ProfilePage = () => {
 
-    const { profile, getUserDetails, changeUserDetails } = useContext(StoreContext);
+    const { profile, getUserDetails, changeUserDetails, handleNavigation } = useContext(StoreContext);
     const userToken = localStorage.getItem('token');
 
     useEffect(() => {
@@ -47,16 +47,20 @@ const ProfilePage = () => {
         changeUserDetails(updatedDetails);
     }
 
+    const handleRoutes = (page) => {
+        handleNavigation(page);
+    }
+
     return (
         <div className='w-[85%] h-[30rem] mt-16 border-2 border-red-500 mx-auto flex items-center gap-7 relative'>
 
             <span className='absolute top-1 right-1'>Hi,<span className='text-red-500'>Daksh Chawla</span></span>
 
             <div className='w-[30%] h-[35%] border-2 border-red-500 flex flex-col gap-2 justify-center text-[0.8rem] font-semibold lg:w-[20%] md:text-[1rem]'>
-                <span>Manage My Account</span>
-                <span>My Cart</span>
-                <span>My Wishlist</span>
-                <span>My Orders</span>
+                <span onClick={() => { handleRoutes('/profile') }}>Manage My Account</span>
+                <span onClick={() => { handleRoutes('/cart') }}>My Cart</span>
+                <span onClick={() => { handleRoutes('/wishlist') }}>My Wishlist</span>
+                <span onClick={() => { handleRoutes('/myOrders') }}>My Orders</span>
             </div>
 
             <div className='w-[67%] h-[80%] md:h-[70%] border-2 border-red-500'>

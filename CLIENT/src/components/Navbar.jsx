@@ -72,7 +72,7 @@ const Navbar = () => {
                         {isProfilePopupOpen && (
                             <div className="absolute top-[100%] right-0 mt-2 w-[200px] bg-gray-800 bg-opacity-70 shadow-lg rounded-lg p-4 z-50 text-white">
                                 <div className="flex flex-col space-y-2">
-                                    <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/') }}>Manage My Account</span>
+                                    <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/profile') }}>Manage My Account</span>
                                     <span className="cursor-pointer hover:text-[#DB4444]" onClick={() => { handleRoutes('/') }}>My Orders</span>
                                     <span className="cursor-pointer hover:text-[#DB4444]" onClick={handleLogout}>Logout</span>
                                 </div>

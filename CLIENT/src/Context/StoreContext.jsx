@@ -25,6 +25,7 @@ const StoreContextProvider = ({ children }) => {
         phone: ''
     })
     const [allOrders, setAllOrders] = useState([]);
+    const [userOrders, setUserOrders] = useState([]);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -650,6 +651,26 @@ const StoreContextProvider = ({ children }) => {
         }
     }
 
+    const fetchUserOrders = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            return;
+        }
+        try {
+            const response = await axios.get('http://localhost:5555/orders/user-orders', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const { orders, success } = response.data;
+            if (success) {
+                setUserOrders(orders);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const changeOrderStatus = async (id, status) => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -691,6 +712,7 @@ const StoreContextProvider = ({ children }) => {
         profile,
         adminProducts,
         allOrders,
+        userOrders,
         getAllProducts,
         fetchDetails,
         fetchLength,
@@ -715,7 +737,8 @@ const StoreContextProvider = ({ children }) => {
         checkOutHandler,
         setAllOrders,
         fetchAllOrders,
-        changeOrderStatus
+        changeOrderStatus,
+        fetchUserOrders
     };
 
     return (
