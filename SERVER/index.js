@@ -13,6 +13,7 @@ import productRoute from './routes/productRoute.js';
 import userRoutes from './routes/userRoute.js';
 import orderRoutes from './routes/orderRoutes.js';
 import paymentRoutes from './routes/paymentRoute.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 
 import connectDb from './dbConnect.js';
 connectDb(URL)
@@ -30,6 +31,7 @@ app.use('/user',userRoutes);
 app.use('/products',productRoute);
 app.use('/orders',orderRoutes);
 app.use('/payment',paymentRoutes);
+app.use('/review',reviewRoutes);
 
 app.get('/getKey',(req,res) => {
     res.status(200).json({key:process.env.RAZORPAY_ID})

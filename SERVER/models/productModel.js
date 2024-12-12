@@ -34,6 +34,7 @@ const productSchema = new Schema({
     images: {
         type: [String]
     },
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reviews' }],
     createdAt: {
         type: Date,
         default: Date.now
