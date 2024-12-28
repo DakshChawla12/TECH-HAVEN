@@ -553,6 +553,25 @@ const StoreContextProvider = ({ children }) => {
         }
     };
 
+    const handleFilter = async (filter, page = 1) => {
+        try {
+            const response = await axios.post(
+                `http://localhost:5555/products/filter?page=${page}&limit=4`,
+                { filter },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+            const { success, products, totalPages } = response.data;
+            if (success) {
+                setAllProducts(products);
+                setTotalPages(totalPages);
+                setCurrentPage(page);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
     const checkOutHandler = async (amount, shippingAddress) => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -738,7 +757,8 @@ const StoreContextProvider = ({ children }) => {
         setAllOrders,
         fetchAllOrders,
         changeOrderStatus,
-        fetchUserOrders
+        fetchUserOrders,
+        handleFilter
     };
 
     return (

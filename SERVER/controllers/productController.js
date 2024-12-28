@@ -46,7 +46,8 @@ const getAllProductsPage = async (req, res) => {
 const getById = async (req, res) => {
     try {
         const { prodID } = req.params;
-        const product = await Product.findById(prodID);
+        const product = await Product.findById(prodID).populate('reviews');
+        await product.save();
         if (!product) {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
@@ -122,6 +123,10 @@ const addProduct = async (req, res) => {
 
 const getFilteredProducts = async (req, res) => {
     try {
+        const { filter } = req.body;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 4;
+
         const {
             name,
             minRating,
@@ -130,13 +135,11 @@ const getFilteredProducts = async (req, res) => {
             maxPrice,
             inStock,
             category,
-        } = req.query;
+        } = filter || {};
 
         const filters = {};
 
-        if (name) {
-            filters.name = { $regex: name, $options: 'i' };
-        }
+        if (name) filters.name = { $regex: name, $options: 'i' };
         if (minRating || maxRating) {
             filters.rating = {};
             if (minRating) filters.rating.$gte = parseFloat(minRating);
@@ -147,20 +150,32 @@ const getFilteredProducts = async (req, res) => {
             if (minPrice) filters.price.$gte = parseFloat(minPrice);
             if (maxPrice) filters.price.$lte = parseFloat(maxPrice);
         }
-        if (inStock) {
-            filters.inStock = inStock === 'true'; // Convert string to boolean
+        if (inStock !== undefined && inStock !== '') {
+            filters.inStock = inStock === 'true';
         }
-        if (category) {
-            filters.category = { $in: category.split(',') };
-        }
+        if (category) filters.category = { $in: category.split(',') };
 
-        const products = await Product.find(filters);
-        res.status(200).json(products);
+        const products = await Product.find(filters)
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        const totalProducts = await Product.countDocuments(filters);
+        const totalPages = Math.ceil(totalProducts / limit);
+        console.log(totalPages);
+
+        res.status(200).json({
+            success: true,
+            products,
+            totalProducts,
+            totalPages,
+            currentPage: page,
+        });
     } catch (error) {
         console.error('Error fetching filtered products:', error);
         res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
+
 
 
 const deleteProduct = async (req, res) => {

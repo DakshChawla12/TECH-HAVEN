@@ -20,6 +20,6 @@ router.route('/:prodID')
     .patch(authenticateToken,editProduct);
 
 router.route('/filter')
-    .get(getFilteredProducts)
+    .post(getFilteredProducts)
 
 export default router;

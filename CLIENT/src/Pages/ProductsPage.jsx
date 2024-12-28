@@ -2,21 +2,40 @@ import React, { useEffect, useState, useContext } from 'react';
 import { StoreContext } from '../Context/StoreContext';
 
 const ProductsPage = () => {
-    const { allProducts, getAllProducts, totalPages, addToCart, addToWishlist, handleNavigation } = useContext(StoreContext);
+    const { allProducts, getAllProducts, totalPages, addToCart, addToWishlist, handleNavigation, handleFilter } = useContext(StoreContext);
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedCategory, setSelectedCategory] = useState(""); // State to track selected category
+    const [filters, setFilters] = useState({
+        maxPrice: '',
+        category: '',
+        inStock: ''
+    });
+    const [filtersApplied, setFiltersApplied] = useState(false);
+
 
     useEffect(() => {
         getAllProducts(currentPage);
     }, [currentPage]);
 
     const handlePreviousPage = () => {
-        if (currentPage > 1) setCurrentPage((prevPage) => prevPage - 1);
+        if (currentPage > 1) {
+            const newPage = currentPage - 1;
+            setCurrentPage(newPage);
+            filtersApplied
+                ? handleFilter(filters, newPage)
+                : getAllProducts(newPage);
+        }
     };
 
     const handleNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage((prevPage) => prevPage + 1);
+        if (currentPage < totalPages) {
+            const newPage = currentPage + 1;
+            setCurrentPage(newPage);
+            filtersApplied
+                ? handleFilter(filters, newPage)
+                : getAllProducts(newPage);
+        }
     };
+
 
     const handleAddToCart = (prodID) => {
         addToCart(prodID);
@@ -35,22 +54,36 @@ const ProductsPage = () => {
         handleNavigation(`/product/${id}`); // Redirect to the details page based on the ID
     };
 
-    const handleCategoryChange = (event) => {
-        setSelectedCategory(event.target.value);
-        console.log("Selected Category:", event.target.value);
+    const handleSubmit = () => {
+        setFiltersApplied(true);
+        handleFilter(filters, 1); // Reset to page 1 when filters are applied
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [name]: value,
+        }));
+        console.log(filters);
     };
 
     return (
         <div className='h-[75rem] w-[90%] mt-16 pl-10 flex'>
-
             {/* Sidebar Section */}
             <div className='h-[70%] w-[30%] border-2 border-green-500 flex flex-col pt-20 items-start'>
                 {/* Max Price */}
                 <div className='ml-7 w-[80%] h-[5rem] flex flex-col'>
                     <span className='text-lg font-semibold'>Max Price</span>
                     <div className='flex items-center w-[100%] h-[80%] gap-5'>
-                        <input type="range" className='w-[80%]' max="20000" defaultValue="5000" onChange={(e) => console.log(e.target.value)} />
-                        <span>20</span>
+                        <input
+                            type="range"
+                            className='w-[80%]'
+                            max="20000"
+                            value={filters.maxPrice}
+                            onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                        />
+                        <span>{filters.maxPrice || '0'}</span>
                     </div>
                 </div>
 
@@ -58,63 +91,44 @@ const ProductsPage = () => {
                 <div className="p-6 rounded-md">
                     <h2 className="text-lg font-semibold mb-4">Choose a Category:</h2>
                     <form>
-                        <div className="mb-2">
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="category"
-                                    value="Mobiles"
-                                    checked={selectedCategory === "Mobiles"}
-                                    onChange={handleCategoryChange}
-                                    className="mr-2"
-                                />
-                                Mobiles
-                            </label>
-                        </div>
-
-                        <div className="mb-2">
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="category"
-                                    value="Laptops"
-                                    checked={selectedCategory === "Laptops"}
-                                    onChange={handleCategoryChange}
-                                    className="mr-2"
-                                />
-                                Laptops
-                            </label>
-                        </div>
-
-                        <div className="mb-2">
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="category"
-                                    value="Televisions"
-                                    checked={selectedCategory === "Televisions"}
-                                    onChange={handleCategoryChange}
-                                    className="mr-2"
-                                />
-                                Televisions
-                            </label>
-                        </div>
-
-                        <div className="mb-2">
-                            <label className="flex items-center">
-                                <input
-                                    type="radio"
-                                    name="category"
-                                    value="Accessories"
-                                    checked={selectedCategory === "Accessories"}
-                                    onChange={handleCategoryChange}
-                                    className="mr-2"
-                                />
-                                Accessories
-                            </label>
-                        </div>
+                        <select
+                            name="category"
+                            value={filters.category}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded-md"
+                        >
+                            <option value="" disabled>
+                                Select a category
+                            </option>
+                            <option value="Mobiles">Mobiles</option>
+                            <option value="Laptops">Laptops</option>
+                            <option value="Televisions">Televisions</option>
+                            <option value="Gaming">Gaming</option>
+                            <option value="Accessories">Accessories</option>
+                        </select>
+                        <h2 className="text-lg font-semibold mt-4">In Stock:</h2>
+                        <select
+                            name="inStock"
+                            value={filters.inStock}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded-md mt-4"
+                        >
+                            <option value="" disabled>
+                                In Stock
+                            </option>
+                            <option value="true">True</option>
+                            <option value="false">False</option>
+                        </select>
                     </form>
                 </div>
+
+                {/* Apply Filter Button */}
+                <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 ml-7"
+                    onClick={handleSubmit}
+                >
+                    Apply Filters
+                </button>
             </div>
 
             {/* Product List Section */}
@@ -170,7 +184,7 @@ const ProductsPage = () => {
                     >
                         Previous
                     </button>
-                    <span>Page {currentPage} of {totalPages}</span>
+                    <span>Page {currentPage} of {totalPages > 0 ? totalPages : 1}</span>
                     <button
                         disabled={currentPage === totalPages}
                         onClick={handleNextPage}
