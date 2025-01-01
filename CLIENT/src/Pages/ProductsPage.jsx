@@ -2,8 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { StoreContext } from '../Context/StoreContext';
 
 const ProductsPage = () => {
-    const { allProducts, getAllProducts, totalPages, addToCart, addToWishlist, handleNavigation, handleFilter } = useContext(StoreContext);
-    const [currentPage, setCurrentPage] = useState(1);
+    const { allProducts, getAllProducts, totalPages, addToCart, addToWishlist, handleNavigation, handleFilter, currentPage, setCurrentPage } = useContext(StoreContext);
     const [filters, setFilters] = useState({
         maxPrice: '',
         category: '',
@@ -103,7 +102,7 @@ const ProductsPage = () => {
                             <option value="Mobiles">Mobiles</option>
                             <option value="Laptops">Laptops</option>
                             <option value="Televisions">Televisions</option>
-                            <option value="Gaming">Gaming</option>
+                            <option value="gaming">Gaming</option>
                             <option value="Accessories">Accessories</option>
                         </select>
                         <h2 className="text-lg font-semibold mt-4">In Stock:</h2>

@@ -19,7 +19,7 @@ const addReview = async (req,res) => {
             return res.status(httpStatus.BAD_REQUEST).json({success:false,message:"invalid product id"});
         }
 
-        const newReview = await new reviewModel({
+        const newReview = new reviewModel({
             username:user.name,
             comment,
         });

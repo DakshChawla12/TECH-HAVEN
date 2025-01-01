@@ -158,6 +158,7 @@ const getFilteredProducts = async (req, res) => {
         const products = await Product.find(filters)
             .skip((page - 1) * limit)
             .limit(limit);
+            console.log(products);
 
         const totalProducts = await Product.countDocuments(filters);
         const totalPages = Math.ceil(totalProducts / limit);

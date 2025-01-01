@@ -26,6 +26,7 @@ const StoreContextProvider = ({ children }) => {
     })
     const [allOrders, setAllOrders] = useState([]);
     const [userOrders, setUserOrders] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -718,6 +719,33 @@ const StoreContextProvider = ({ children }) => {
         }
     }
 
+    const handleAddReview = async (prodId, comment) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            handleFailure("please login to perform this action")
+            return;
+        }
+        try {
+            const response = await axios.post(
+                `http://localhost:5555/review/${prodId}`,
+                { comment },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            const { success, product } = response.data;
+            if (success) {
+                handleSuccess("review added");
+                setProduct(product);
+            }
+        } catch (error) {
+            handleFailure("failed to add review");
+        }
+    }
+
     const contextValue = {
         totalPages,
         allProducts,
@@ -732,6 +760,8 @@ const StoreContextProvider = ({ children }) => {
         adminProducts,
         allOrders,
         userOrders,
+        currentPage,
+        setCurrentPage,
         getAllProducts,
         fetchDetails,
         fetchLength,
@@ -758,7 +788,8 @@ const StoreContextProvider = ({ children }) => {
         fetchAllOrders,
         changeOrderStatus,
         fetchUserOrders,
-        handleFilter
+        handleFilter,
+        handleAddReview
     };
 
     return (
